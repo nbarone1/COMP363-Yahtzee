@@ -1,0 +1,39 @@
+Outline
+
+Game Overview
+* Min 2 Players
+* 13 rounds of rolling before taking final scores
+* 5 die rolled at most 3 times
+* Scorecards for each player are filled out based on die
+    functions for a game:
+    * start, clear players, create players, 0 turns taken
+    * quit, end game, return scores and placement
+    * new turn, pass turn to next player, if returning to player 1, increase turns taken
+    variables/conditions
+    * turns taken, start 0, once hit 13, end game
+    * min 1 player
+* Players
+    funcitons of player
+    * turn, clear die, start rolling
+    * end turn, add die combo to score card, if not able to skip
+    variables/constraints
+    * # turns, 0 to 13 and once 13 cannot take another turn
+    * Scorecard, keeps track of points
+    states
+    * is turn
+* Scorecard
+    Functions of Scorecard
+    * add score, take result of turn and add to slot on Scorecard
+    * total score, sum points on card
+    * view slots, view available slots/combinations for points
+    variables/constraints
+    * slots, combinations for points for each line
+        * cannot have more than one score per slot
+        * slots gain score values to be summed
+* die
+    Functions for die
+    *
+    variables/constraints
+    *
+    states
+    * frozen
