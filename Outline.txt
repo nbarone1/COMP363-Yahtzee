@@ -32,8 +32,10 @@ Game Overview
         * slots gain score values to be summed
 * die
     Functions for die
-    *
+    * Roll die
+    * Freeze die
     variables/constraints
-    *
+    * count # times rolled
+    * face value = value between 1-6
     states
-    * frozen
+    * frozen/unfrozen
