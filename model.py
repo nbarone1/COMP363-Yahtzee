@@ -49,4 +49,12 @@ class Scorecard:
             for i in dice:
                 if i.value == 2:
                     n = n+1
-            card[1] = n
+            card[1] = 2*n
+    
+    def three():
+        if card[2] == 2:
+            n = 0
+            for i in dice:
+                if i.value == 2:
+                    n = n+1
+            card[2]=3*n
