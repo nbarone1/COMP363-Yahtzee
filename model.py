@@ -14,8 +14,11 @@ class Die:
     
     def roll():
         if state == 0:
-            value = random.randint(1,6)
-            rolls = rolls+1
+            if rolls <3:
+                value = random.randint(1,6)
+                rolls = rolls+1
+                if rolls == 3:
+                    state = 1
 
     def freeze():
         if state == 0:
