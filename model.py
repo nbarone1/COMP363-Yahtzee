@@ -36,6 +36,11 @@ class Scorecard:
     def __init__(self):
         self.score = 0
         self.card = np.zeros(13, dtype = int)
+
+    def getscore():
+        for i in dice:
+            score = score+i.value
+        return score
     
     def one():
         #number of ones
@@ -104,3 +109,21 @@ class Scorecard:
                     for k in dice:
                         sum = sum+k.value
                     card[6]=sum
+
+    def eight():
+        # 4 of a kind
+        if card[7] == 0:
+            for i in range(1,7):
+                n = 0
+                for k in dice:
+                    if k.value == i:
+                        n = n+1
+                if n >= 4:
+                    sum = 0
+                    for k in dice:
+                        sum = sum+k.value
+                    card[7]=sum
+    def nine():
+        # full house
+        if card[8] == 0:
+            
