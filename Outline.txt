@@ -5,6 +5,7 @@ Game Overview
 * 13 rounds of rolling before taking final scores
 * 5 die rolled at most 3 times
 * Scorecards for each player are filled out based on die
+* Game
     functions for a game:
     * start, clear players, create players, 0 turns taken
     * quit, end game, return scores and placement
