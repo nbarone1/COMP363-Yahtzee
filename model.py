@@ -1,6 +1,7 @@
 # Model for Yahtzee Game
 
 import random
+from unicodedata import name
 import numpy as np
 
 class Die:
@@ -36,7 +37,13 @@ class Dice():
         self = []
         for i in range(1,6):
             self.append(Die)
-            
+
+
+class Player(name):
+    def __init__(self,name):
+        self.name = name
+        self.dice = Dice()
+        self.scorecard = Scorecard()
 
 class Scorecard:
 
