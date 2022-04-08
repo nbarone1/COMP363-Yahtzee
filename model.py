@@ -30,6 +30,14 @@ class Die:
         state = 0
         rolls = 0
 
+class Dice():
+    def __init__(self):
+        # list of 5 die
+        self = []
+        for i in range(1,6):
+            self.append(Die)
+            
+
 class Scorecard:
 
     # scorecard structure to track player points
