@@ -43,77 +43,69 @@ class Player(name):
     def __init__(self,name):
         self.name = name
         self.dice = Dice()
-        self.scorecard = Scorecard()
-
-class Scorecard:
-
-    # scorecard structure to track player points
-    def __init__(self):
+        self.scorecard = np.zeros(13, dtype = int)
         self.score = 0
-        self.card = np.zeros(13, dtype = int)
 
     def getscore():
-        for i in dice:
-            score = score+i.value
         return score
     
     def one():
         #number of ones
-        if card[0] == 0:                    
+        if scorecard[0] == 0:                    
             n = 0
             for i in dice:
                 if i.value == 1:
                     n = n+1
-            card[0] = n*1
+            scorecard[0] = n*1
         
     def two():
         # number of twos
-        if card[1] == 0:
+        if scorecard[1] == 0:
             n = 0
             for i in dice:
                 if i.value == 2:
                     n = n+1
-            card[1] = 2*n
+            scorecard[1] = 2*n
     
     def three():
         # number of threes
-        if card[2] == 2:
+        if scorecard[2] == 2:
             n = 0
             for i in dice:
                 if i.value == 2:
                     n = n+1
-            card[2]=3*n
+            scorecard[2]=3*n
     
     def four():
         # number of fours
-        if card[3] == 0:
+        if scorecard[3] == 0:
             n = 0
             for i in dice:
                 if i.value == 2:
                     n = n+1
-            card[3] = 4*n
+            scorecard[3] = 4*n
     
     def five():
         # number of fives
-        if card[4] == 0:
+        if scorecard[4] == 0:
             n = 0
             for i in dice:
                 if i.value == 2:
                     n = n+1
-            card[4]=5*n
+            scorecard[4]=5*n
     
     def six():
         # number of sixes
-        if card[5]==0:
+        if scorecard[5]==0:
             n = 0
             for i in dice:
                 if i.value == 2:
                     n = n+1
-            card[5] = 6*n
+            scorecard[5] = 6*n
     
     def seven():
         # 3 of a kind
-        if card[6] == 0:
+        if scorecard[6] == 0:
             for i in range(1,7):
                 n = 0
                 for k in dice:
@@ -123,11 +115,11 @@ class Scorecard:
                     sum = 0
                     for k in dice:
                         sum = sum+k.value
-                    card[6]=sum
+                    scorecard[6]=sum
 
     def eight():
         # 4 of a kind
-        if card[7] == 0:
+        if scorecard[7] == 0:
             for i in range(1,7):
                 n = 0
                 for k in dice:
@@ -137,8 +129,7 @@ class Scorecard:
                     sum = 0
                     for k in dice:
                         sum = sum+k.value
-                    card[7]=sum
+                    scorecard[7]=sum
     def nine():
         # full house
-        if card[8] == 0:
-            
+        scorecard[8]=0
