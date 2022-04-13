@@ -1,8 +1,6 @@
 # Model for Yahtzee Game
 
-from multiprocessing.sharedctypes import Value
 import random
-from unicodedata import name
 import numpy as np
 
 class Die:
@@ -32,7 +30,7 @@ class Die:
         state = 0
         rolls = 0
 
-class DiceRow():
+class DiceRow:
     def __init__(self):
         # list of 5 die
         self = []
@@ -40,10 +38,10 @@ class DiceRow():
             self.append(Die)
 
 
-class Player(name):
+class Player:
     def __init__(self,name):
         self.name = name
-        self.dice = DiceRow()
+        self.dice = DiceRow
         self.scorecard = np.zeros(13, dtype = int)
         self.score = 0
 
