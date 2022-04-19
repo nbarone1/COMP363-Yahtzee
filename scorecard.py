@@ -37,7 +37,7 @@ def score(dice):
     for die in dice:
         values[die-1] += 1
 
-    print(f'debug counts of dice: {values}\n')
+    #print(f'debug counts of dice: {values}')
     total = 0 
     # Upper section scoring
     upper_sect = list(options.keys())[:6]

@@ -1,10 +1,12 @@
 import random as rand
+import re
 import scorecard as sc
 
 # Roll dice
 # Dice - list of ints where position represents a die and value represents the number rolled (numbers must be 1-6)
 # d1-d5 each represent a dice
 # Defaults to rolling a random number 1-6. Set desired dice to its current value to "freeze"
+'''
 def roll(
         d1=rand.randrange(1,7), 
         d2=rand.randrange(1,7), 
@@ -12,22 +14,54 @@ def roll(
         d4=rand.randrange(1,7), 
         d5=rand.randrange(1,7)):
     return [d1,d2,d3,d4,d5]
+'''
+
+def roll(dice=None, freeze=None):
+    diceroll = [
+        rand.randrange(1,7), 
+        rand.randrange(1,7), 
+        rand.randrange(1,7), 
+        rand.randrange(1,7), 
+        rand.randrange(1,7)
+    ]
+    # Save dice rolls you would like to keep
+    if dice and freeze:
+        for f in freeze:
+            diceroll[f-1] = dice[f-1] 
+    return diceroll
+
 
 def game_loop(player):
+    # Roll up to three times
     dice = roll()
-    print('dice: ', dice)
+    options = {}
+    rerolls = 2
+    while True: 
+        print('dice:\nd1 d2 d3 d4 d5')
+        print(dice)
+        options = sc.score(dice)
+        sc.validate(options, player)
+        print(f'Choices: {options}\n')
 
-    options = sc.score(dice)
-    print(options, "\n")
-    sc.validate(options, player)
-    print(f'Choices: {options}\n')
-    
-    pick = input()
-    # Mark scorcard with current player selection. Update scorecard
-    if options[pick] != 0:
-        print(f'"{pick}" selected')
-        #points += options[pick]
-        player[pick] = options[pick] 
+        if rerolls > 0:
+            print('Enter a valid scorecard option, or choose which dice to freeze')
+        else:
+            print('Enter a valid scorecard option')
+        pick = input()
+        
+        # Mark scorcard with current player selection. Update scorecard
+        if pick in options.keys():
+            if options[pick] and options[pick] != 0:
+                print(f'"{pick}" selected')
+                player[pick] = options[pick] 
+                return
+        elif rerolls > 0:
+            freeze = list(map(int, pick.replace(',', ' ').split()))
+            print(freeze)
+            dice = roll(dice, freeze)
+            rerolls-=1
+        else:
+            print("Not a valid option or no rerolls left, select a valid scorecard option")
 
 
 def main():
@@ -38,19 +72,20 @@ def main():
     # Current Turn
     turn = True
 
-    #game_loop(p1)
-
     # Game loop    
     while True:
         if turn:
+            print("\n--------------------")
             print("Player 1's turn")
             game_loop(p1)
-            print(p1)
         else:
+            print("\n--------------------")
             print("Player 2's turn")
             game_loop(p2)
-       
-        print(f'p1: {sc.calculate_score(p1)} points\np2: {sc.calculate_score(p2)} points')
+        
+        print("------------------------------")
+        print(f'| p1: {sc.calculate_score(p1)} points |\n| p2: {sc.calculate_score(p2)} points |')
+        print("------------------------------")
 
         turn = not turn
 
