@@ -14,7 +14,6 @@ def roll(
     return [d1,d2,d3,d4,d5]
 
 def game_loop(player):
-    #points = 0
     dice = roll()
     print('dice: ', dice)
 
@@ -46,6 +45,7 @@ def main():
         if turn:
             print("Player 1's turn")
             game_loop(p1)
+            print(p1)
         else:
             print("Player 2's turn")
             game_loop(p2)

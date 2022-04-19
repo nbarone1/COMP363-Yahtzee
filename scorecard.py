@@ -25,10 +25,7 @@ def calculate_score(player):
 def validate(options, player):
     # Marks the current player's scorecard
     for category in player:
-        if player[category] == 0 and options[category] > 0: 
-            player[category] = options[category] 
-        else:
-            # Pop if not a valid option
+        if not (player[category] == 0 and options[category] > 0): 
             options.pop(category)
 
 def score(dice):
