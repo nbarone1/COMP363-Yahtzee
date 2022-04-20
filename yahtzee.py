@@ -1,28 +1,17 @@
 import random as rand
-import re
 import scorecard as sc
 
 # Roll dice
 # Dice - list of ints where position represents a die and value represents the number rolled (numbers must be 1-6)
 # d1-d5 each represent a dice
 # Defaults to rolling a random number 1-6. Set desired dice to its current value to "freeze"
-'''
-def roll(
-        d1=rand.randrange(1,7), 
-        d2=rand.randrange(1,7), 
-        d3=rand.randrange(1,7), 
-        d4=rand.randrange(1,7), 
-        d5=rand.randrange(1,7)):
-    return [d1,d2,d3,d4,d5]
-'''
-
 def roll(dice=None, freeze=None):
     diceroll = [
-        rand.randrange(1,7), 
-        rand.randrange(1,7), 
-        rand.randrange(1,7), 
-        rand.randrange(1,7), 
-        rand.randrange(1,7)
+        rand.randint(1,6), 
+        rand.randint(1,6), 
+        rand.randint(1,6), 
+        rand.randint(1,6), 
+        rand.randint(1,6)
     ]
     # Save dice rolls you would like to keep
     if dice and freeze:
@@ -31,7 +20,7 @@ def roll(dice=None, freeze=None):
     return diceroll
 
 
-def game_loop(player):
+def player_turn(player):
     # Roll up to three times
     dice = roll()
     options = {}
@@ -77,11 +66,11 @@ def main():
         if turn:
             print("\n--------------------")
             print("Player 1's turn")
-            game_loop(p1)
+            player_turn(p1)
         else:
             print("\n--------------------")
             print("Player 2's turn")
-            game_loop(p2)
+            player_turn(p2)
         
         print("------------------------------")
         print(f'| p1: {sc.calculate_score(p1)} points |\n| p2: {sc.calculate_score(p2)} points |')
