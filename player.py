@@ -1,7 +1,6 @@
-import dice as dc
 
-# Player Class
 class Player:
+    
     def __init__(self, name):
         self.name = name
         self.player_score = 0
@@ -23,40 +22,6 @@ class Player:
             "yahtzee" : 0
         }
       
-    # Mark scorcard with current player selection. Update scorecard
-    def gameloop(self, dice, rerolls=2):
-        # Calculate options based on roll
-        print('dice:\nd1 d2 d3 d4 d5')
-        print(dice)
-        options = self.player_options(dice)
-        print(f'Choices: {options}\n')
-
-        if rerolls > 0:
-            print('Enter a valid scorecard option, or choose which dice to freeze')
-        else:
-            print('Enter a valid scorecard option')
-        pick = input()
-
-        # Base case
-        # Mark scorcard with current player selection. Update scorecard
-        if pick in options.keys():
-            if self.scorecard[pick] == 0:
-                print(f'"{pick}" selected')
-                self.scorecard[pick] = options[pick] 
-                self.player_score += options[pick]
-        elif pick == "":
-            print("Pass")
-        elif rerolls > 0:
-            freeze = list(map(int, pick.replace(',', ' ').split()))
-            print(freeze)
-            dice = dc.roll(dice, freeze)
-            rerolls-=1
-            self.gameloop(dice, rerolls)     
-        else:
-            print("Not a valid option or no rerolls left, select a valid scorecard option")
-            self.gameloop(dice, rerolls)     
-
-
     # Valid option if it is not in current player's scorecard
     def validate(self, options):
         # Marks the current player's scorecard
