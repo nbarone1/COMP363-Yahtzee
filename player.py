@@ -22,7 +22,7 @@ class Player:
             "lg-straight" : 0,
             "yahtzee" : 0
         }
-
+      
     # Mark scorcard with current player selection. Update scorecard
     def gameloop(self, dice, rerolls=2):
         # Calculate options based on roll
@@ -122,3 +122,4 @@ class Player:
         
         # Return valid dict of options
         return self.validate(options) 
+
