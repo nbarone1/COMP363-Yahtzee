@@ -1,3 +1,5 @@
+import enum
+from gc import freeze
 import pygame
 import random
 import os
@@ -10,7 +12,7 @@ HEIGHT = 750
 FPS = 60
 QUARTER_WIDTH = WIDTH//4
 MIDDLE_HEIGHT = HEIGHT//2
-ASSET_PATH = f"{os.environ['HOME']}/github_repos/yahtzee/assets" 
+ASSET_PATH = f"{os.getcwd()}\\assets" 
 
 # Init pygame
 pygame.init()
@@ -62,8 +64,15 @@ def event_handler(player, dice=None):
             # Click on dice
             for die in dice_list:
                 if die.get_rect().collidepoint(x,y):
+                    window.blit()
                     print("yes")
         return True
+
+
+def player_creation():
+    # Start event handler
+    for event in pygame.event.get():
+        if event.type == pygame.
 
 
 # Mark scorcard with current player selection. Update scorecard
@@ -118,7 +127,7 @@ def refresh(dice):
     # Paint the dice faces
     if dice != None:
         for i, die in enumerate(dice):
-            window.blit(dice_list[die], ((1.3+(i*0.3))*QUARTER_WIDTH, MIDDLE_HEIGHT))
+            window.blit(dice_list[die], pygame.Color("Red"), ((1.3+(i*0.3))*QUARTER_WIDTH, MIDDLE_HEIGHT),2)
 
 def main():
     running = True
