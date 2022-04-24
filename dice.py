@@ -1,20 +1,22 @@
-import random as rand
+# Dice class for use in Player class
 
-# Roll dice
-# Dice - list of ints where position represents a die and value represents the number rolled (numbers must be 1-6)
-# d1-d5 each represent a dice
-# Defaults to rolling a random number 1-6. Set desired dice to its current value to "freeze"
-def roll(dice=None, freeze=None):
-    diceroll = [
-        rand.randint(1,6), 
-        rand.randint(1,6), 
-        rand.randint(1,6), 
-        rand.randint(1,6), 
-        rand.randint(1,6)
-    ]
-    # Save dice rolls you would like to keep
-    if dice and freeze:
-        for f in freeze:
-            diceroll[f-1] = dice[f-1] 
-    return diceroll
 
+import random
+import numpy as np
+
+class DiceRow:
+    def __init__(self):
+        # 5 dice in list
+        self.dice=[random.randint(1,6),random.randint(1,6),random.randint(1,6),random.randint(1,6),random.randint(1,6)]
+        # count rolls per turn
+        self.rolls = 1
+
+    def rollAll(self,rr=None):
+        if self.rolls<4:
+            if rr:
+                for r in rr:
+                    self.dice[r-1]=random.randint(1,6)
+            self.rolls += 1
+
+        def clear():
+            self.rolls = 1
