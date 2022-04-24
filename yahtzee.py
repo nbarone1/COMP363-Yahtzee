@@ -137,7 +137,7 @@ def gameloop(player, dice, rerolls=2):
     '''
 
 
-def refresh(dice, player_options=None, player_score=None):
+def refresh(dice, freeze, player_options=None, player_score=None):
     # Repaint the screen
     window.blit(background, (0, 0))
     window.blit(title_label, (WIDTH//2 - title_label.get_width()//2, 250))
@@ -146,9 +146,13 @@ def refresh(dice, player_options=None, player_score=None):
     #window.blit(scoreboard, (3*QUARTER_WIDTH-25, 50))
     
     # Paint the dice faces
-    if dice != None:
-        for i, die in enumerate(dice):
+    if dice != None and freeze != None:
+        for i, (die, f) in enumerate(zip(dice, freeze)):
             window.blit(dice_list[die], [(1.3+(i*0.3))*QUARTER_WIDTH, MIDDLE_HEIGHT])
+            if f != 0:
+                pixel_rect = dice_list[die].get_bounding_rect()
+                trimmed_surface = pygame.Surface(pixel_rect.size)
+                trimmed_surface.blit(dice_list[die], (0,0), pixel_rect)
     # Paint player options
     if player_options != None:
         window.blit(player_options, (QUARTER_WIDTH*2 - player_options.get_width()//2, HEIGHT//2+100))
@@ -162,8 +166,8 @@ def main():
     p1 = player.Player("Player 1")
     p2 = player.Player("Player 2")
     # Initialize board
-    refresh(dc.roll())
     freeze = [0,0,0,0,0]
+    refresh(dc.roll(dice, freeze), freeze)
 
     while running:
         for event in pygame.event.get():
@@ -171,12 +175,12 @@ def main():
                 return False
             elif event.type == pygame.KEYDOWN:
                 # Start game
-                if event.key == pygame.K_y:
-                    dice = dc.roll()
+                if event.key == pygame.K_r:
+                    dice = dc.roll(dice, freeze)
                     options = p1.player_options(dice)
                     # Edit options label to current options
                     player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
-                    refresh(dice, player_options)
+                    refresh(dice, freeze, player_options)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 # Select Dice
                 x,y = event.pos
@@ -184,7 +188,10 @@ def main():
                     if d != None:
                         coords = ((1.3+((i-1)*0.3))*QUARTER_WIDTH+(WIDTH//28), MIDDLE_HEIGHT+HEIGHT//22)
                         if d.get_rect(center=coords).collidepoint(x,y):
-                            freeze[i-1] = i
+                            if freeze[i-1] != 0:
+                                freeze[i-1] = 0
+                            else:
+                                freeze[i-1] = i
                             print(freeze)
 
 
