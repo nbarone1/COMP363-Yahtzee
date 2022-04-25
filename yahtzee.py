@@ -323,10 +323,7 @@ def refresh(dice, freeze, player_options=None, player_score=None):
 def main():
     running = True
     dice = None
-    player_create()
-    p1 = player.Player("Player 1")
-    p2 = player.Player("Player 2")
-    # Initialize board
+    player_list = player_create()
     freeze = [0,0,0,0,0]
     refresh(dc.roll(dice, freeze), freeze)
 
@@ -338,7 +335,7 @@ def main():
                 # Start game
                 if event.key == pygame.K_r:
                     dice = dc.roll(dice, freeze)
-                    options = p1.player_options(dice)
+                    options = player_list[0].player_options(dice)
                     # Edit options label to current options
                     player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
                     refresh(dice, freeze, player_options)
