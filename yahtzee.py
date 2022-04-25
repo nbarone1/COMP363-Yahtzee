@@ -24,6 +24,7 @@ title_font = pygame.font.SysFont("firacode", 32)
 score_font = pygame.font.SysFont("firacode", 32)
 title_label = title_font.render("Would You like to roll? Y/N", True, (255, 255, 255))
 score_label = score_font.render("Score:", True, (255, 255, 255))
+options_font = pygame.font.Font(None, 32)
 
 # Load images
 dice1 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\alt-die\\dice1.svg"), (WIDTH//14, HEIGHT//12))
@@ -34,6 +35,7 @@ dice5 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\alt-die\\dice5.
 dice6 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\alt-die\\dice6.svg"), (WIDTH//14, HEIGHT//12))
 
 # Indexed list to reference all the faces
+global dice_list
 dice_list = [None, dice1, dice2, dice3, dice4, dice5, dice6]
 pygame.display.set_icon(dice6)
 
@@ -45,6 +47,12 @@ scoreboard = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\scorecard.
 
 # Clock to dictate FPS
 clock = pygame.time.Clock()
+
+# input rect
+input_rect = pygame.Rect(200, 200, 140, 32)
+
+# define font
+base_font = pygame.font.Font(None, 32)
 
 # Handle user input
 # Returns running status
@@ -68,18 +76,11 @@ def event_handler(player, dice=None):
         return True
 
 
-def player_create():
-    # create list of players 
-
-    player_list = []
+def player_numbers():
+    # set number of players 
 
     window.blit(background, (0, 0))
 
-    # input rect
-    input_rect = pygame.Rect(200, 200, 140, 32)
-
-    # define font
-    base_font = pygame.font.Font(None, 32)
     # color for input background and letters
     color_active = pygame.Color('lightskyblue3')
     color_passive = pygame.Color('chartreuse4')
@@ -100,8 +101,8 @@ def player_create():
 
                 # If return, create player
 
-                if event.type == pygame.K_RETURN:
-                    return False
+                if event.key == pygame.K_RETURN:
+                    return numberplayers
 
                 # Check for backspace
                 if event.key == pygame.K_BACKSPACE:
@@ -138,63 +139,76 @@ def player_create():
             #update how long should pass
             clock.tick(60)
 
-    for x in range(numberplayers):
-        prompt_label = base_font.render("Enter Player #{} Name: ".format(x-1),True, (255, 255, 255))
-        name = ""
-        user_text = ""
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if input_rect.collidepoint(event.pos):
-                        active = True
-                    else:
-                        active = False
-        
-                if event.type == pygame.KEYDOWN:
+def create_player(playerlist, x):
+    # create individual players
 
-                    # If return, create player
+    # color for input background and letters
+    color_active = pygame.Color('lightskyblue3')
+    color_passive = pygame.Color('chartreuse4')
+    color = color_passive
 
-                    if event.type == pygame.K_RETURN:
-                        name = user_text
-                        return False
-        
-                    # Check for backspace
-                    if event.key == pygame.K_BACKSPACE:
-        
-                        # get text input from 0 to -1 i.e. end.
-                        user_text = user_text[:-1]
-        
-                    # Unicode standard is used for string
-                    # formation
-                    else:
-                        user_text += event.unicode
-  
-                    if active:
-                        color = color_active
-                    else:
-                        color = color_passive
-                # bring it to life
-                pygame.draw.rect(window, color, input_rect)
+    window.blit(background, (0, 0))
 
-                text_surface = base_font.render(user_text, True, (255,255,255))
+    prompt_label = base_font.render("Enter Player #{} Name: ".format(x),True, (255, 255, 255))
+    name = ""
+    user_text = ""
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if input_rect.collidepoint(event.pos):
+                    active = True
+                else:
+                    active = False
+    
+            if event.type == pygame.KEYDOWN:
 
-                # set position
-                window.blit(prompt_label, (WIDTH//2 - prompt_label.get_width()//2, 250))
-                window.blit(text_surface, (input_rect.x+5, input_rect.y+5))
+                # If return, create player
 
-                # limit width so text cannot go outside of view
+                if event.type == pygame.K_RETURN:
+                    name = user_text
+                    playerlist.append(player.Player(name))
+                    return False
+    
+                # Check for backspace
+                if event.key == pygame.K_BACKSPACE:
+    
+                    # get text input from 0 to -1 i.e. end.
+                    user_text = user_text[:-1]
+    
+                # Unicode standard is used for string
+                # formation
+                else:
+                    user_text += event.unicode
 
-                input_rect.w = max(100, text_surface.get_width()+10)
-                #update screen
-                pygame.display.flip()
+                if active:
+                    color = color_active
+                else:
+                    color = color_passive
+            # bring it to life
+            pygame.draw.rect(window, color, input_rect)
 
-                #update how long should pass
-                clock.tick(60)
+            text_surface = base_font.render(user_text, True, (255,255,255))
 
-        pl = player.Player(name)
-        player_list.append(pl)
+            # set position
+            window.blit(prompt_label, (WIDTH//2 - prompt_label.get_width()//2, 250))
+            window.blit(text_surface, (input_rect.x+5, input_rect.y+5))
 
-    return player_list
+            # limit width so text cannot go outside of view
+
+            input_rect.w = max(100, text_surface.get_width()+10)
+            #update screen
+            pygame.display.flip()
+
+            #update how long should pass
+            clock.tick(60)
+
+def player_create():
+    # create player list
+    player_list = []
+    numplayer = int(player_numbers())
+    print(numplayer)
+    for x in range(numplayer):
+        create_player(player_list,numplayer)
 
 # Mark scorcard with current player selection. Update scorecard
 def gameloop(player, dice=None, rerolls=2):
@@ -213,7 +227,8 @@ def quit(event):
 # Returns running status
 def keypress(event, player, dice=None):
     # Quit
-    if quit(event): return False
+    if quit(event): 
+        return False
 
     elif event.type == pygame.KEYDOWN:
         # Start game
@@ -303,61 +318,67 @@ def refresh(dice, freeze, player_options=None, player_score=None):
     # Paint the dice faces
     if dice != None and freeze != None:
         for i, (die, f) in enumerate(zip(dice, freeze)):
-            window.blit(dice_list[die], [(1.3+(i*0.3))*QUARTER_WIDTH, MIDDLE_HEIGHT])
+            width = (1.1+(i*0.4))*QUARTER_WIDTH
+            height = MIDDLE_HEIGHT
             if f != 0:
-                pixel_rect = dice_list[die].get_bounding_rect()
-                trimmed_surface = pygame.Surface(pixel_rect.size)
-                trimmed_surface.blit(dice_list[die], (0,0), pixel_rect)
+                pygame.draw.rect(window, (255,0,0), pygame.Rect(width-5, height-5, 105, 80))
+            window.blit(dice_list[die], [width, height])
+            
     # Paint player options
     if player_options != None:
         window.blit(player_options, (QUARTER_WIDTH*2 - player_options.get_width()//2, HEIGHT//2+100))
 
-    # Paint player score
-    # if player_score != None
+
+def dice_roll(player, dice, freeze):
+    options = player.player_options(dice)
+    # Edit options label to current options
+    player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
+    refresh(dice, freeze, player_options)
+
+    
+def dice_freeze(x, y, dice, freeze):
+    for i, d in enumerate(dice_list):
+        if d != None:
+            coords = ((1.1+((i-1)*0.4))*QUARTER_WIDTH+(WIDTH//28), MIDDLE_HEIGHT+HEIGHT//22)
+            if d.get_rect(center=coords).collidepoint(x,y):
+                if freeze[i-1] != 0:
+                    freeze[i-1] = 0
+                else:
+                    freeze[i-1] = i
+                refresh(dice, freeze)
+                print(freeze)
+
 
 def main():
     running = True
-    dice = None
+    dice = dc.roll(None, None)
     player_list = player_create()
+    p1 = player.Player("Player 1")
+    p2 = player.Player("Player 2")
+    # Initialize board
     freeze = [0,0,0,0,0]
-    refresh(dc.roll(dice, freeze), freeze)
-    turns = 0
+    refresh(dice, freeze)
 
-    # while running:
-    #    while turns < 13:
-    #       for event in pygame.event.get():
-    #            if event.type == pygame.QUIT:
-    #               return False
-    #            for p in range(0,len(player_list)-1):
-    #                turns += 1
-    #                elif event.type == pygame.KEYDOWN:
-    #                    # Start game
-    #                    if event.key == pygame.K_r:
-    #                        dice = dc.roll(dice, freeze)
-    #                        options = player_list[p].player_options(dice)
-                            # Edit options label to current options
-    #                        player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
-    #                        refresh(dice, freeze, player_options)
-    #                elif event.type == pygame.MOUSEBUTTONDOWN:
-                        # Select Dice
-     #                   x,y = event.pos
-     #                   for i, d in enumerate(dice_list):
-      #                      if d != None:
-       #                         coords = ((1.3+((i-1)*0.3))*QUARTER_WIDTH+(WIDTH//28), MIDDLE_HEIGHT+HEIGHT//22)
-        #                        if d.get_rect(center=coords).collidepoint(x,y):
-         #                           if freeze[i-1] != 0:
-          #                              freeze[i-1] = 0
-           #                         else:
-            #                             freeze[i-1] = i
-              #                      print(freeze)
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
+            elif event.type == pygame.KEYDOWN:
+                # Start game
+                if event.key == pygame.K_r:
+                    dice = dc.roll(dice, freeze)
+                    dice_roll(p1, dice, freeze)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Select Dice
+                x,y = event.pos
+                dice_freeze(x,y, dice, freeze)
 
-
-                #running = keypress(event, p1)
-            #pygame.display.flip()
-            # Constrain FPS
-            #clock.tick(FPS)
+        pygame.display.flip()
+        # Constrain FPS
+        clock.tick(FPS)
 
     pygame.quit()
+
 
 if __name__=='__main__':
     main()
