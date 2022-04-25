@@ -326,37 +326,41 @@ def main():
     player_list = player_create()
     freeze = [0,0,0,0,0]
     refresh(dc.roll(dice, freeze), freeze)
+    turns = 0
 
     while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return False
-            elif event.type == pygame.KEYDOWN:
-                # Start game
-                if event.key == pygame.K_r:
-                    dice = dc.roll(dice, freeze)
-                    options = player_list[0].player_options(dice)
-                    # Edit options label to current options
-                    player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
-                    refresh(dice, freeze, player_options)
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                # Select Dice
-                x,y = event.pos
-                for i, d in enumerate(dice_list):
-                    if d != None:
-                        coords = ((1.3+((i-1)*0.3))*QUARTER_WIDTH+(WIDTH//28), MIDDLE_HEIGHT+HEIGHT//22)
-                        if d.get_rect(center=coords).collidepoint(x,y):
-                            if freeze[i-1] != 0:
-                                freeze[i-1] = 0
-                            else:
-                                freeze[i-1] = i
-                            print(freeze)
+        while turns < 13:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return False
+                for p in range(0,len(player_list)-1):
+                    turns += 1
+                    elif event.type == pygame.KEYDOWN:
+                        # Start game
+                        if event.key == pygame.K_r:
+                            dice = dc.roll(dice, freeze)
+                            options = player_list[p].player_options(dice)
+                            # Edit options label to current options
+                            player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
+                            refresh(dice, freeze, player_options)
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                        # Select Dice
+                        x,y = event.pos
+                        for i, d in enumerate(dice_list):
+                            if d != None:
+                                coords = ((1.3+((i-1)*0.3))*QUARTER_WIDTH+(WIDTH//28), MIDDLE_HEIGHT+HEIGHT//22)
+                                if d.get_rect(center=coords).collidepoint(x,y):
+                                    if freeze[i-1] != 0:
+                                        freeze[i-1] = 0
+                                    else:
+                                        freeze[i-1] = i
+                                    print(freeze)
 
 
-            #running = keypress(event, p1)
-        pygame.display.flip()
-        # Constrain FPS
-        clock.tick(FPS)
+                #running = keypress(event, p1)
+            pygame.display.flip()
+            # Constrain FPS
+            clock.tick(FPS)
 
     pygame.quit()
 
