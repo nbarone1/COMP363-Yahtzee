@@ -73,7 +73,7 @@ def player_create():
 
     player_list = []
 
-    window.blit(background, (0, 0)
+    window.blit(background, (0, 0))
 
     # input rect
     input_rect = pygame.Rect(200, 200, 140, 32)
@@ -87,60 +87,63 @@ def player_create():
 
     prompt_label = base_font.render("Enter Number of Players: ",True, (255, 255, 255))
 
-    numberplayers = 0
-    while True:
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if input_rect.collidepoint(event.pos):
-                active = True
-            else:
-                active = False
+    numberplayers = ""
+    for event in pygame.event.get():
+        while True:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if input_rect.collidepoint(event.pos):
+                    active = True
+                else:
+                    active = False
 
-        if event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN:
 
-            # If return, create player
+                # If return, create player
 
-            if event.type == pygame.K_RETURN:
-                return
+                if event.type == pygame.K_RETURN:
+                    return
 
-            # Check for backspace
-            if event.key == pygame.K_BACKSPACE:
+                # Check for backspace
+                if event.key == pygame.K_BACKSPACE:
 
-                # get text input from 0 to -1 i.e. end.
-                numberplayers = numberplayers[:-1]
+                    # get text input from 0 to -1 i.e. end.
+                    numberplayers = numberplayers[:-1]
 
-            # Unicode standard is used for string
-            # formation
-            else:
-                if event.unicode.isnumeric():
-                    numberplayers += event.unicode
+                # Unicode standard is used for string
+                # formation
+                else:
+                    if event.unicode.isnumeric():
+                        numberplayers += event.unicode
 
-            screen.fill((255, 255, 255))
-  
-            if active:
-                color = color_active
-            else:
-                color = color_passive
-        
-        # bring it to life
-        pygame.draw.rect(window, color, input_rect)
+                screen.fill((255, 255, 255))
+    
+                if active:
+                    color = color_active
+                else:
+                    color = color_passive
+            
+            # bring it to life
+            pygame.draw.rect(window, color, input_rect)
 
-        text_surface = base_font.render(numberplayers, True, (255,255,255))
+            text_surface = base_font.render(numberplayers, True, (255,255,255))
 
-        # set position
-        window.blit(text_surface, (input_rect.x+5, input_rect.y+5))
+            # set position
+            window.blit(prompt_label, (WIDTH//2 - prompt_label.get_width()//2, 250))
+            window.blit(text_surface, (input_rect.x+5, input_rect.y+5))
 
-        # limit width so text cannot go outside of view
+            # limit width so text cannot go outside of view
 
-        input_rect.w = max(100, text_surface.get_width()+10)
-        #update screen
-        pygame.display.flip()
+            input_rect.w = max(100, text_surface.get_width()+10)
+            #update screen
+            pygame.display.flip()
 
-        #update how long should pass
-        clock.tick(60)
+            #update how long should pass
+            clock.tick(60)
 
     for x in range(numberplayers):
+        prompt_label = base_font.render("Enter Player #{} Name: ".format(x-1),True, (255, 255, 255))
         name = ""
-        for even in pygame.event.get():
+        for event in pygame.event.get():
             user_text = ""
             while True:
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -155,7 +158,7 @@ def player_create():
 
                     if event.type == pygame.K_RETURN:
                         name = user_text
-                        return
+                        False
         
                     # Check for backspace
                     if event.key == pygame.K_BACKSPACE:
@@ -181,6 +184,7 @@ def player_create():
                 text_surface = base_font.render(user_text, True, (255,255,255))
 
                 # set position
+                window.blit(prompt_label, (WIDTH//2 - prompt_label.get_width()//2, 250))
                 window.blit(text_surface, (input_rect.x+5, input_rect.y+5))
 
                 # limit width so text cannot go outside of view
