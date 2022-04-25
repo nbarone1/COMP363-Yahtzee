@@ -1,3 +1,5 @@
+import enum
+from gc import freeze
 import pygame
 import os
 import player
@@ -9,7 +11,9 @@ HEIGHT = 750
 FPS = 60
 QUARTER_WIDTH = WIDTH//4
 MIDDLE_HEIGHT = HEIGHT//2
+
 ASSET_PATH = f"{os.environ['HOME']}/github_repos/yahtzee/assets" 
+
 
 # Init pygame
 pygame.init()
@@ -18,6 +22,7 @@ window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Yahtzee")
 
 # Fonts and Text
+
 # TODO: Clean this up; remove redundancies
 title_font = pygame.font.SysFont("firacode", 32)
 score_font = pygame.font.SysFont("firacode", 32)
@@ -35,6 +40,19 @@ dice4 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice4.jpg"), (WI
 dice5 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice5.jpg"), (WIDTH//14, HEIGHT//11))
 dice6 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice6.jpg"), (WIDTH//14, HEIGHT//11))
 
+title_font = pygame.font.SysFont("firacode", 32)
+score_font = pygame.font.SysFont("firacode", 32)
+title_label = title_font.render("Would You like to roll? Y/N", True, (255, 255, 255))
+score_label = score_font.render("Score:", True, (255, 255, 255))
+
+# Load images
+dice1 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice1.svg"), (WIDTH//14, HEIGHT//12))
+dice2 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice2.svg"), (WIDTH//14, HEIGHT//12))
+dice3 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice3.svg"), (WIDTH//14, HEIGHT//12))
+dice4 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice4.svg"), (WIDTH//14, HEIGHT//12))
+dice5 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice5.svg"), (WIDTH//14, HEIGHT//12))
+dice6 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice6.svg"), (WIDTH//14, HEIGHT//12))
+
 # Indexed list to reference all the faces
 global dice_list
 dice_list = [None, dice1, dice2, dice3, dice4, dice5, dice6]
@@ -49,8 +67,16 @@ scoreboard = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard.p
 # Clock to dictate FPS
 clock = pygame.time.Clock()
 
+# This function got cut off when I was editing diffs for some reason
+''' 
+def player_creation():
+    # Start event handler
+    for event in pygame.event.get():
+        if event.type == pygame.
+'''
 
-def refresh(dice, freeze, player_options=None, player_score=None):
+def refresh(dice):
+
     # Repaint the screen
     window.blit(background, (0, 0))
     window.blit(title_label, (WIDTH//2 - title_label.get_width()//2, 250))
@@ -78,6 +104,7 @@ def dice_roll(player, dice, freeze):
     player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
     refresh(dice, freeze, player_options)
 
+    
 def dice_freeze(x, y, dice, freeze):
     for i, d in enumerate(dice_list):
         if d != None:
@@ -89,7 +116,7 @@ def dice_freeze(x, y, dice, freeze):
                     freeze[i-1] = i
                 refresh(dice, freeze)
                 print(freeze)
-    #refresh(dice, freeze)
+
 
 def main():
     running = True
@@ -119,6 +146,7 @@ def main():
         clock.tick(FPS)
 
     pygame.quit()
+
 
 if __name__=='__main__':
     main()
