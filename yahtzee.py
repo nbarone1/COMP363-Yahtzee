@@ -49,93 +49,6 @@ scoreboard = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard.p
 # Clock to dictate FPS
 clock = pygame.time.Clock()
 
-def quit(event):
-    if event.type == pygame.QUIT:
-        return False
-
-
-# Handle user input
-# Returns running status
-def keypress(event, player, dice=None):
-    # Quit
-    if quit(event): return False
-
-    elif event.type == pygame.KEYDOWN:
-        # Start game
-        if event.key == pygame.K_y:
-            refresh(dc.roll())
-            gameloop(player, dc.roll())
-    return True
-
-def mousepress(event):
-    # Quit
-    if quit(event): return False
-
-    elif event.type == pygame.MOUSEBUTTONDOWN:
-        x,y = event.pos
-        for i, d in enumerate(dice_list):
-            if d != None:
-                coords = ((1.3+((i-1)*0.3))*QUARTER_WIDTH+(WIDTH//28), MIDDLE_HEIGHT+HEIGHT//22)
-                if d.get_rect(center=coords).collidepoint(x,y):
-                    print(i)
-
-
-# Mark scorcard with current player selection. Update scorecard
-def gameloop(player, dice, rerolls=2):
-    # Calculate options based on roll
-    
-    # TODO: Show dice
-    options = player.player_options(dice)
-    # Edit options label to current options
-    player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
-    refresh(dice, player_options)
-
-    mousepress(event)
-    '''
-    if rerolls == 0:
-        return
-    elif rerolls > 0:
-        freeze = list(map(int, pick.replace(',', ' ').split()))
-        print(freeze)
-        dice = dice.roll(dice, freeze)
-        rerolls-=1
-        gameloop(dice, player, rerolls)     
-    '''
-
-    '''
-    # TODO: Display list of options
-
-    if rerolls > 0:
-        # TODO: Display text below
-        print('Enter a valid scorecard option, or choose which dice to freeze')
-    else:
-        # TODO: Display text below
-        print('Enter a valid scorecard option')
-
-    # TODO: Integrate a pick option in pygame 
-    pick = input()
-
-    # Base case
-    # Mark scorcard with current player selection. Update scorecard
-    if pick in options.keys():
-        if player.scorecard[pick] == 0:
-            print(f'"{pick}" selected')
-            # TODO: Highlight die that have been selected
-            player.scorecard[pick] = options[pick] 
-            player.player_score += options[pick]
-    elif pick == "":
-        print("Pass")
-    elif rerolls > 0:
-        freeze = list(map(int, pick.replace(',', ' ').split()))
-        print(freeze)
-        dice = dice.roll(dice, freeze)
-        rerolls-=1
-        gameloop(dice, player, rerolls)     
-    else:
-        print("Not a valid option or no rerolls left, select a valid scorecard option")
-        gameloop(dice, player, rerolls)     
-    '''
-
 
 def refresh(dice, freeze, player_options=None, player_score=None):
     # Repaint the screen
@@ -148,26 +61,44 @@ def refresh(dice, freeze, player_options=None, player_score=None):
     # Paint the dice faces
     if dice != None and freeze != None:
         for i, (die, f) in enumerate(zip(dice, freeze)):
-            window.blit(dice_list[die], [(1.3+(i*0.3))*QUARTER_WIDTH, MIDDLE_HEIGHT])
+            width = (1.1+(i*0.4))*QUARTER_WIDTH
+            height = MIDDLE_HEIGHT
             if f != 0:
-                pixel_rect = dice_list[die].get_bounding_rect()
-                trimmed_surface = pygame.Surface(pixel_rect.size)
-                trimmed_surface.blit(dice_list[die], (0,0), pixel_rect)
+                pygame.draw.rect(window, (255,0,0), pygame.Rect(width-5, height-5, 105, 80))
+            window.blit(dice_list[die], [width, height])
+            
     # Paint player options
     if player_options != None:
         window.blit(player_options, (QUARTER_WIDTH*2 - player_options.get_width()//2, HEIGHT//2+100))
 
-    # Paint player score
-    # if player_score != None
+
+def dice_roll(player, dice, freeze):
+    options = player.player_options(dice)
+    # Edit options label to current options
+    player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
+    refresh(dice, freeze, player_options)
+
+def dice_freeze(x, y, dice, freeze):
+    for i, d in enumerate(dice_list):
+        if d != None:
+            coords = ((1.1+((i-1)*0.4))*QUARTER_WIDTH+(WIDTH//28), MIDDLE_HEIGHT+HEIGHT//22)
+            if d.get_rect(center=coords).collidepoint(x,y):
+                if freeze[i-1] != 0:
+                    freeze[i-1] = 0
+                else:
+                    freeze[i-1] = i
+                refresh(dice, freeze)
+                print(freeze)
+    #refresh(dice, freeze)
 
 def main():
     running = True
-    dice = None
+    dice = dc.roll(None, None)
     p1 = player.Player("Player 1")
     p2 = player.Player("Player 2")
     # Initialize board
     freeze = [0,0,0,0,0]
-    refresh(dc.roll(dice, freeze), freeze)
+    refresh(dice, freeze)
 
     while running:
         for event in pygame.event.get():
@@ -177,25 +108,12 @@ def main():
                 # Start game
                 if event.key == pygame.K_r:
                     dice = dc.roll(dice, freeze)
-                    options = p1.player_options(dice)
-                    # Edit options label to current options
-                    player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
-                    refresh(dice, freeze, player_options)
+                    dice_roll(p1, dice, freeze)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 # Select Dice
                 x,y = event.pos
-                for i, d in enumerate(dice_list):
-                    if d != None:
-                        coords = ((1.3+((i-1)*0.3))*QUARTER_WIDTH+(WIDTH//28), MIDDLE_HEIGHT+HEIGHT//22)
-                        if d.get_rect(center=coords).collidepoint(x,y):
-                            if freeze[i-1] != 0:
-                                freeze[i-1] = 0
-                            else:
-                                freeze[i-1] = i
-                            print(freeze)
+                dice_freeze(x,y, dice, freeze)
 
-
-            #running = keypress(event, p1)
         pygame.display.flip()
         # Constrain FPS
         clock.tick(FPS)
