@@ -69,11 +69,17 @@ def event_handler(player, dice=None):
         return True
 
 
-def player_creation():
-    # Start event handler
-    for event in pygame.event.get():
-        if event.type == pygame.
+def player_create(numberplayers):
+    # create list of players 
 
+    player_list = []
+
+    for x in range(numberplayers):
+        name = input("Please enter name of player #{}: ".format(x+1))
+        pl = player.Player(name)
+        player_list.append(pl)
+
+    return player_list
 
 # Mark scorcard with current player selection. Update scorecard
 def gameloop(player, dice=None, rerolls=2):
