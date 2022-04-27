@@ -93,11 +93,6 @@ value_box_pos = [(25+card_width,60),
                  (25+card_width,610),
                  (25+card_width,660),
                  (25+card_width,710)] 
-<<<<<<< HEAD
- 
-=======
->>>>>>> 1094c0c2264b9502680d823e28676ca192fa2a76
-
 
 # Game Background
 background = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/gameboard.jpg"), (WIDTH, HEIGHT))
@@ -371,30 +366,8 @@ def main():
     #print(f"{player_list[0].name}'s turn")
     refresh(dice, freeze)
 
-<<<<<<< HEAD
-    while running or turns < 13:
-        for p in player_list:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    return False
-                elif event.type == pygame.KEYDOWN:
-                    # Start game
-                    if event.key == pygame.K_r:
-                        if rolls > 0:
-                            rolls -= 1
-                            dice = dc.roll(dice, freeze)
-                            options = dice_roll(p, dice, freeze, rolls)
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    # Select Dice
-                    x,y = event.pos
-                    dice_freeze(x, y, dice, options, freeze, p)
-                    print(f"{p.name}'s turn")
-                    refresh(dice=None, freeze=None)
-                    break
-=======
     count=0
     curr_player = player_list[count]
->>>>>>> 1094c0c2264b9502680d823e28676ca192fa2a76
 
     while running or turns < 13:
         for event in pygame.event.get():
