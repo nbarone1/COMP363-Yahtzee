@@ -164,7 +164,7 @@ def create_player(playerlist, x):
 
                 # If return, create player
 
-                if event.type == pygame.K_RETURN:
+                if event.key == pygame.K_RETURN:
                     name = user_text
                     playerlist.append(player.Player(name))
                     return False
