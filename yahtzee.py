@@ -256,7 +256,7 @@ def dice_freeze(x, y, dice, freeze,play):
     # Check if dice are clicked
     for i, d in enumerate(dice_list):
         if d != None:
-            coords = ((1.4+((i-1)*0.4))*QUARTER_WIDTH+(WIDTH//28), MIDDLE_HEIGHT+HEIGHT//22)
+            coords = ((1.7+((i-1)*0.4))*QUARTER_WIDTH+(WIDTH//28), MIDDLE_HEIGHT+HEIGHT//22)
             if d.get_rect(center=coords).collidepoint(x,y):
                 if freeze[i-1] != 0:
                     freeze[i-1] = 0
@@ -264,6 +264,8 @@ def dice_freeze(x, y, dice, freeze,play):
                     freeze[i-1] = i
                 refresh(dice, freeze,play)
                 print(freeze)
+    # Select an option
+    for i, sc in enumerate(scorecard_labels_list)
 
 
 def main():
