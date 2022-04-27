@@ -256,7 +256,7 @@ def end(player_list):
     winner_name = ""
     max_score = 0
     for i in range(0,len(player_list)):
-        if player_list[i].player_score >= max_score:
+        if player_list[i].player_score > max_score:
             max_score = player_list[i].player_score
             winner = player_list[i]
             winner_name = winner.name
