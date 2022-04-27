@@ -84,6 +84,8 @@ class Player:
             # Yahtzee!
             if v == 5:
                 options['yahtzee'] = 50
+            
+            options['chance'] = total
         
         # Return valid dict of options
         return self.validate(options) 

@@ -4,7 +4,7 @@ from numpy import full, rollaxis
 import py
 import pygame
 import os
-import player
+import player 
 import dice as dc
 
 # Constants
@@ -93,7 +93,10 @@ value_box_pos = [(25+card_width,60),
                  (25+card_width,610),
                  (25+card_width,660),
                  (25+card_width,710)] 
+<<<<<<< HEAD
  
+=======
+>>>>>>> 1094c0c2264b9502680d823e28676ca192fa2a76
 
 
 # Game Background
@@ -343,7 +346,9 @@ def dice_freeze(x, y, dice, options, freeze, player):
                     print(f'"{sc}" selected')
                     player.scorecard[sc] = options[sc] 
                     player.player_score += options[sc]
-                    return
+                    # Return value true if selection is made
+                    return True
+        #return False
 
 def main():
     running = True
@@ -357,14 +362,16 @@ def main():
     turns = 0
     # Initialize board
     freeze = [0,0,0,0,0]
+    rolls = 3
 
     #intro = base_font.render("Press 'r' to begin the game",True,(255,255,255))
     start()
 
-    rolls = 3
-    print(f"{player_list[0].name}'s turn")
+    selection_made = False
+    #print(f"{player_list[0].name}'s turn")
     refresh(dice, freeze)
 
+<<<<<<< HEAD
     while running or turns < 13:
         for p in player_list:
             for event in pygame.event.get():
@@ -384,10 +391,44 @@ def main():
                     print(f"{p.name}'s turn")
                     refresh(dice=None, freeze=None)
                     break
+=======
+    count=0
+    curr_player = player_list[count]
+>>>>>>> 1094c0c2264b9502680d823e28676ca192fa2a76
 
-            pygame.display.flip()
-            # Constrain FPS
-            clock.tick(FPS)
+    while running or turns < 13:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
+            elif event.type == pygame.KEYDOWN:
+                # Start game
+                if event.key == pygame.K_r:
+                    if rolls == 3:
+                        print(f"'{curr_player.name}'s turn")
+                    if rolls > 0:
+                        rolls -= 1
+                        dice = dc.roll(dice, freeze)
+                        #options = dice_roll(p1, dice, freeze, rolls)
+                        options = dice_roll(curr_player, dice, freeze, rolls)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Select Dice
+                x,y = event.pos
+                # Boolean to check if selection has been made
+                selection_made = dice_freeze(x, y, dice, options, freeze, curr_player)
+
+                # Move to next player's turn if a selection is made
+                if selection_made:
+                    # Reset values 
+                    rolls = 3
+                    freeze = [0,0,0,0,0]
+                    refresh(dice, freeze)
+                    print(f'{curr_player.name} turn over')
+                    # Switch to the next player
+                    count +=1
+                    curr_player = player_list[count] if count < len(player_list) else player_list[0]
+        pygame.display.flip()
+        # Constrain FPS
+        clock.tick(FPS)
         turns += 1    
 
     # end(player_list)
