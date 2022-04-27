@@ -1,5 +1,6 @@
 import enum
 from gc import freeze
+from numpy import rollaxis
 import pygame
 import os
 import player
@@ -214,10 +215,10 @@ def refresh(dice, freeze, playername=None, player_options=None, player_score=Non
         window.blit(player_options, (QUARTER_WIDTH*2 - player_options.get_width()//2, HEIGHT//2+100))
 
 
-def dice_roll(player, dice, freeze):
+def dice_roll(player, dice, freeze,rolls):
     options = player.player_options(dice)
     # Print Player's Name on Top
-    player_name = base_font.render(f"{player.name}'s Turn", True,(255,255,255))
+    player_name = base_font.render(f"{player.name}'s Turn with {rolls} rolls remaining", True,(255,255,255))
     # Edit options label to current options
     player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
     refresh(dice, freeze, player_name,player_options)
@@ -243,7 +244,8 @@ def main():
     # Initialize board
     freeze = [0,0,0,0,0]
     intro = base_font.render("Press 'r' to begin the game",True,(255,255,255))
-    refresh(dice, freeze,intro)
+    refresh(dice, freeze, intro)
+    rolls = 3
 
     while running or turns < 13:
         for i in range(0,len(player_list)):
@@ -253,8 +255,10 @@ def main():
                 elif event.type == pygame.KEYDOWN:
                     # Start game
                     if event.key == pygame.K_r:
-                        dice = dc.roll(dice, freeze)
-                        dice_roll(player_list[i], dice, freeze)
+                        if rolls > 0:
+                            rolls += -1
+                            dice = dc.roll(dice, freeze)
+                            dice_roll(player_list[i], dice, freeze,rolls)
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     # Select Dice
                     x,y = event.pos
