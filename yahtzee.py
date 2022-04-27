@@ -12,7 +12,7 @@ HEIGHT = 750
 FPS = 60
 QUARTER_WIDTH = WIDTH//4
 MIDDLE_HEIGHT = HEIGHT//2
-ASSET_PATH = f"{os.getcwd()}\\assets" 
+ASSET_PATH = '/home/nick/github_repos/yahtzee/assets'
 
 # Init pygame
 pygame.init()
@@ -36,6 +36,7 @@ dice4 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice4.jpg"), (WI
 dice5 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice5.jpg"), (WIDTH//14, HEIGHT//12))
 dice6 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice6.jpg"), (WIDTH//14, HEIGHT//12))
 # Load scoreboard assets
+
 aces_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/aces_label.jpg"), (QUARTER_WIDTH*0.9, HEIGHT//13))
 twos_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/twos_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
 threes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/threes_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
@@ -44,16 +45,18 @@ fives_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/fiv
 sixes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/sixes_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
 upper_selection_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/upper_selection.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
 value_box_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/value_box.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
+
 # Indexed list to reference all the faces
 global dice_list
 dice_list = [None, dice1, dice2, dice3, dice4, dice5, dice6]
 pygame.display.set_icon(dice6)
 
 # Game Background
-background = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\gameboard.jpg"), (WIDTH, HEIGHT))
-
+background = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/gameboard.jpg"), (WIDTH, HEIGHT))
 # Scorecard
-scoreboard = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\scorecard.png"), (QUARTER_WIDTH, MIDDLE_HEIGHT*1.75))
+scoreboard = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard.png"), (QUARTER_WIDTH, MIDDLE_HEIGHT*1.75))
+title_slide = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/title_screen.jpg"), (WIDTH, HEIGHT))
+game_over = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/game_over.jpg"), (WIDTH, HEIGHT))
 
 # start/finish slides
 title_slide = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/title_screen.jpg"), (WIDTH, HEIGHT))
@@ -144,8 +147,11 @@ def create_player(x):
     prompt_label = base_font.render("Enter Player #{} Name: ".format(x),True, (255, 255, 255))
     name = ""
     user_text = ""
-    while True:
+    running = True
+    while running:
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if input_rect.collidepoint(event.pos):
                     active = True
@@ -293,7 +299,9 @@ def dice_freeze(x, y, dice, freeze,play):
 def main():
     running = True
     dice = dc.roll(None, None)
-    player_list = player_create()
+
+    #player_list = player_create()
+    p1 = player.Player("Player 1")
     turns = 0
     # Initialize board
     freeze = [0,0,0,0,0]
@@ -301,22 +309,22 @@ def main():
     rolls = 3
 
     while running or turns < 13:
-        for i in range(0,len(player_list)):
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    return False
-                elif event.type == pygame.KEYDOWN:
-                    # Start game
-                    if event.key == pygame.K_r:
-                        if rolls > 0:
-                            rolls += -1
-                            dice = dc.roll(dice, freeze)
-                            dice_roll(player_list[i], dice, freeze,rolls)
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    # Select Dice
-                    x,y = event.pos
-                    dice_freeze(x,y, dice, freeze,player_list[i])
-        turns += 1    
+    #for i in range(0,len(player_list)):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
+            elif event.type == pygame.KEYDOWN:
+                # Start game
+                if event.key == pygame.K_r:
+                    if rolls > 0:
+                        rolls -= 1
+                        dice = dc.roll(dice, freeze)
+                        dice_roll(p1, dice, freeze, rolls)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Select Dice
+                x,y = event.pos
+                dice_freeze(x, y, dice, freeze, p1)
+        #turns += 1    
 
         pygame.display.flip()
         # Constrain FPS
