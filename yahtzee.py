@@ -200,21 +200,15 @@ def create_player(x):
                     active = True
                 else:
                     active = False
-    
             if event.type == pygame.KEYDOWN:
-
                 # If return, create player
-
                 if event.key == pygame.K_RETURN:
                     name = user_text
                     return player.Player(name)
-    
                 # Check for backspace
                 if event.key == pygame.K_BACKSPACE:
-    
                     # get text input from 0 to -1 i.e. end.
                     user_text = user_text[:-1]
-    
                 # Unicode standard is used for string
                 # formation
                 else:
@@ -277,7 +271,7 @@ def end(player_list):
             pygame.quit()
 
 
-def refresh(dice, freeze, player=None, player_options=None):
+def refresh(dice, freeze, player=None, player_options=None, rolls=None):
     # Repaint the screen
     window.blit(background, (0, 0))
     window.blit(title_label, (WIDTH//2 - title_label.get_width()//2, 250))
@@ -288,10 +282,10 @@ def refresh(dice, freeze, player=None, player_options=None):
         window.blit(sc, card_pos[i])
         window.blit(value_box_sc, value_box_pos[i])
 
-
-    #window.blit(scoreboard, (25, 50))
-    #if player.name != None:
-    #    window.blit(player.name,(620,50))
+    # Print Player's Name on Top
+    if player != None:
+        player_displayname = base_font.render(f"{player.name}'s Turn with {rolls} rolls remaining", True,(255,255,255))
+        window.blit(player_displayname,(620,50))
 
     # Paint the dice faces
     if dice != None and freeze != None:
@@ -311,11 +305,9 @@ def refresh(dice, freeze, player=None, player_options=None):
 def dice_roll(player, dice, freeze,rolls):
     options = player.player_options(dice)
     print(options)
-    # Print Player's Name on Top
-    player_name = base_font.render(f"{player.name}'s Turn with {rolls} rolls remaining", True,(255,255,255))
     # Edit options label to current options
     player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
-    refresh(dice, freeze, player, player_options)
+    refresh(dice, freeze, player, player_options, rolls)
     return options
 
     
@@ -364,7 +356,7 @@ def main():
 
     selection_made = False
     #print(f"{player_list[0].name}'s turn")
-    refresh(dice, freeze)
+    refresh(dice, freeze, rolls=rolls)
 
     count=0
     curr_player = player_list[count]
@@ -394,7 +386,7 @@ def main():
                     # Reset values 
                     rolls = 3
                     freeze = [0,0,0,0,0]
-                    refresh(dice, freeze)
+                    refresh(dice, freeze, rolls=rolls)
                     print(f'{curr_player.name} turn over')
                     # Switch to the next player
                     count +=1
