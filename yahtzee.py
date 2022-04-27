@@ -284,36 +284,43 @@ def main():
     dice = dc.roll(None, None)
     options = None
 
-    #player_list = player_create()
     p1 = player.Player("Player 1")
+    p2 = player.Player("Player 2")
+    #player_list = player_create()
+    player_list = [p1, p2] 
     turns = 0
     # Initialize board
     freeze = [0,0,0,0,0]
     #intro = base_font.render("Press 'r' to begin the game",True,(255,255,255))
-    refresh(dice, freeze)
     rolls = 3
+    print(f"{player_list[0].name}'s turn")
+    refresh(dice, freeze)
 
     while running or turns < 13:
-    #for i in range(0,len(player_list)):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return False
-            elif event.type == pygame.KEYDOWN:
-                # Start game
-                if event.key == pygame.K_r:
-                    if rolls > 0:
-                        rolls -= 1
-                        dice = dc.roll(dice, freeze)
-                        options = dice_roll(p1, dice, freeze, rolls)
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                # Select Dice
-                x,y = event.pos
-                dice_freeze(x, y, dice, options, freeze, p1)
-        #turns += 1    
+        for p in player_list:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return False
+                elif event.type == pygame.KEYDOWN:
+                    # Start game
+                    if event.key == pygame.K_r:
+                        if rolls > 0:
+                            rolls -= 1
+                            dice = dc.roll(dice, freeze)
+                            #options = dice_roll(p1, dice, freeze, rolls)
+                            options = dice_roll(p, dice, freeze, rolls)
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    # Select Dice
+                    x,y = event.pos
+                    dice_freeze(x, y, dice, options, freeze, p)
+                    print(f"{p.name}'s turn")
+                    refresh(dice=None, freeze=None)
+                    break
 
-        pygame.display.flip()
-        # Constrain FPS
-        clock.tick(FPS)
+            pygame.display.flip()
+            # Constrain FPS
+            clock.tick(FPS)
+        turns += 1    
 
     pygame.quit()
 
