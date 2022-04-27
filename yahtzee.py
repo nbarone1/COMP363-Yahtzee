@@ -386,6 +386,7 @@ def main():
                 # Start game
                 if event.key == pygame.K_r:
                     if rolls == 3:
+                        # start of turn says 3 rolls remaining and gives 4 chances for dice to be played
                         print(f"'{curr_player.name}'s turn")
                     if rolls > 0:
                         rolls -= 1
@@ -395,6 +396,7 @@ def main():
                 # Select Dice
                 x,y = event.pos
                 # Boolean to check if selection has been made
+                # Freeze makes rolls = None
                 selection_made = dice_freeze(x, y, dice, options, freeze, curr_player)
 
                 # Move to next player's turn if a selection is made
