@@ -233,15 +233,33 @@ def refresh(dice, freeze, playername=None, player_options=None, player_score=Non
     window.blit(background, (0, 0))
     window.blit(title_label, (WIDTH//2 - title_label.get_width()//2, 250))
     window.blit(score_label, (QUARTER_WIDTH//2 - score_label.get_width()//2, HEIGHT-40))
-    window.blit(scoreboard, (25, 50))
-    if playername != None:
-        window.blit(playername,(620,50))
+
+    # Repaint scorecard
+    window.blit(upper_selection_sc, (25, 5))
+    window.blit(aces_sc, (25, 60))
+    window.blit(twos_sc, (25, 110))
+    window.blit(threes_sc, (25, 160))
+    window.blit(fours_sc, (25, 210))
+    window.blit(fives_sc, (25, 260))
+    window.blit(sixes_sc, (25, 310))
+    
+    window.blit(value_box_sc, (25+aces_sc.get_width(), 60))
+    window.blit(value_box_sc, (25+aces_sc.get_width(), 110))
+    window.blit(value_box_sc, (25+aces_sc.get_width(), 160))
+    window.blit(value_box_sc, (25+aces_sc.get_width(), 210))
+    window.blit(value_box_sc, (25+aces_sc.get_width(), 260))
+    window.blit(value_box_sc, (25+aces_sc.get_width(), 310))
+
+    #window.blit(scoreboard, (25, 50))
+    #if playername != None:
+    #    window.blit(playername,(620,50))
+
     #window.blit(scoreboard, (3*QUARTER_WIDTH-25, 50))
     
     # Paint the dice faces
     if dice != None and freeze != None:
         for i, (die, f) in enumerate(zip(dice, freeze)):
-            width = (1.4+(i*0.4))*QUARTER_WIDTH
+            width = (1.7+(i*0.4))*QUARTER_WIDTH
             height = MIDDLE_HEIGHT
             if f != 0:
                 pygame.draw.rect(window, (255,0,0), pygame.Rect(width-5, height-5, 105, 80))
@@ -250,7 +268,6 @@ def refresh(dice, freeze, playername=None, player_options=None, player_score=Non
     # Paint player options
     if player_options != None:
         window.blit(player_options, (QUARTER_WIDTH*2 - player_options.get_width()//2, HEIGHT//2+100))
-
 
 def dice_roll(player, dice, freeze,rolls):
     options = player.player_options(dice)
