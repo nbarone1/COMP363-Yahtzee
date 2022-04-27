@@ -3,6 +3,7 @@ from gc import freeze
 from numpy import full, rollaxis
 import pygame
 import os
+import sys
 import player 
 import dice as dc
 
@@ -252,24 +253,26 @@ def start():
 
 def end(player_list):
     winner = ""
-    max = 0
+    max_score = 0
     for i in range(0,len(player_list)):
-        if player_list[i].player_score > max:
-            max = player_list[i].player_score
+        if player_list[i].player_score >= max_score:
+            max_score = player_list[i].player_score
             winner = player_list[i].name
-        if player_list[i].player_score == max:
-            winner = winner," and ",player_list[i].name," tied"
+            winnings = base_font.render(f"{winner} wins with a score of {max_score}", True, (255,255,255))
+        if player_list[i].player_score == max_score:
+            winnings = base_font.render(f'{winner} and {player_list[i].name} tied', True, (255,255,255))
+            #winnings = f'{winner} and {player_list[i].name} tied'
     
-    winnings = base_font.render(f"{winner} wins with a score of {max}", True, (255,255,255))
-    quit_message = options_font.render("Press any key to exit", True, (255,255,255))
+    #winnings = base_font.render(f"{winner} wins with a score of {max_score}", True, (255,255,255))
+    #quit_message = options_font.render("Press any key to exit", True, (255,255,255))
 
     window.blit(game_over,(0,0))
     window.blit(winnings,((WIDTH//2 - winnings.get_width()//2),HEIGHT//2))
-    window.blit(quit_message,((WIDTH//2 - quit_message.get_width()//2),(HEIGHT//2)-winnings.get_height()//2-quit_message.get_height()))
-
+    #window.blit(quit_message,((WIDTH//2 - quit_message.get_width()//2),(HEIGHT//2)-winnings.get_height()//2-quit_message.get_height()))
     for event in pygame.event.get():
-        if event.type is pygame.KEYDOWN:
-            pygame.quit()
+        if event.type == pygame.QUIT:
+           sys.exit(1) 
+
 
 
 def refresh(dice, freeze, player=None, player_options=None, rolls=None):
@@ -357,12 +360,15 @@ def main():
 
     selection_made = False
     #print(f"{player_list[0].name}'s turn")
-    refresh(dice, freeze, rolls=rolls)
+    #refresh(dice, freeze, rolls=rolls)
 
     count=0
     curr_player = player_list[count]
 
-    while running or turns < 13:
+    while running:# and turns < 2:
+        # Check for game over
+        if turns > 1:
+            end(player_list)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
@@ -390,13 +396,11 @@ def main():
                     print(f'{curr_player.name} turn over')
                     # Switch to the next player
                     count +=1
+                    turns += 1    
                     curr_player = player_list[count] if count < len(player_list) else player_list[0]
         pygame.display.flip()
         # Constrain FPS
         clock.tick(FPS)
-        turns += 1    
-
-    # end(player_list)
 
     # End Game via entering a key
 
