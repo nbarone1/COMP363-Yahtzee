@@ -39,6 +39,7 @@ dice5 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice5.jpg"), (WI
 dice6 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice6.jpg"), (WIDTH//14, HEIGHT//12))
 # Load scoreboard assets
 
+
 aces_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/aces_label.jpg"), (QUARTER_WIDTH*0.75, HEIGHT//13))
 twos_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/twos_label.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
 threes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/threes_label.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
@@ -59,6 +60,7 @@ value_box_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard
 global dice_list
 dice_list = [None, dice1, dice2, dice3, dice4, dice5, dice6]
 scorecard_labels_dict ={"aces" : aces_sc, "twos": twos_sc, "threes" : threes_sc, "fours" : fours_sc, "fives" : fives_sc, "sixes" : sixes_sc,"3-kind" : tofakind_sc,"4-kind" : fofakind_sc,"full-house" : fullhouse_sc,"sm-straight" : smstr_sc,"lg-straight" :lgstr_sc,"yahzee" : yahtzee_sc,"chance" : chance_sc}
+
 pygame.display.set_icon(dice6)
 card_width = aces_sc.get_width()
 
@@ -91,6 +93,11 @@ value_box_pos = [(25+card_width,60),
                  (25+card_width,610),
                  (25+card_width,660),
                  (25+card_width,710)] 
+
+
+# Dimensions for card labels and value box labels
+card_pos = [(25,60), (25,110), (25,160), (25,210), (25,260), (25,310)]
+value_box_pos = [(25+aces_sc.get_width(),60), (25+aces_sc.get_width(),110), (25+aces_sc.get_width(),160), (25+aces_sc.get_width(),210), (25+aces_sc.get_width(),260), (25+aces_sc.get_width(),310)] 
 
 
 # Game Background
@@ -276,11 +283,10 @@ def end(player_list):
             pygame.quit()
 
 
-def refresh(dice, freeze, playername=None, player_options=None, player_score=None):
+def refresh(dice, freeze, player=None, player_options=None):
     # Repaint the screen
     window.blit(background, (0, 0))
     window.blit(title_label, (WIDTH//2 - title_label.get_width()//2, 250))
-    window.blit(score_label, (QUARTER_WIDTH//2 - score_label.get_width()//2, HEIGHT-40))
 
     # Repaint scorecard
     window.blit(upper_selection_sc, (25, 5))
@@ -290,34 +296,37 @@ def refresh(dice, freeze, playername=None, player_options=None, player_score=Non
 
 
     #window.blit(scoreboard, (25, 50))
-    #if playername != None:
-    #    window.blit(playername,(620,50))
+    #if player.name != None:
+    #    window.blit(player.name,(620,50))
 
-    #window.blit(scoreboard, (3*QUARTER_WIDTH-25, 50))
-    
     # Paint the dice faces
     if dice != None and freeze != None:
         for i, (die, f) in enumerate(zip(dice, freeze)):
             width = (1.7+(i*0.4))*QUARTER_WIDTH
             height = MIDDLE_HEIGHT
             if f != 0:
-                pygame.draw.rect(window, (255,0,0), pygame.Rect(width-5, height-5, 105, 80))
+                pygame.draw.rect(window, (255,0,0), pygame.Rect(width-5, height-5, 103, 75))
             window.blit(dice_list[die], [width, height])
             
     # Paint player options
     if player_options != None:
         window.blit(player_options, (QUARTER_WIDTH*2 - player_options.get_width()//2, HEIGHT//2+100))
 
+
+# Returns options
 def dice_roll(player, dice, freeze,rolls):
     options = player.player_options(dice)
+    print(options)
     # Print Player's Name on Top
     player_name = base_font.render(f"{player.name}'s Turn with {rolls} rolls remaining", True,(255,255,255))
     # Edit options label to current options
     player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
-    refresh(dice, freeze, player_name,player_options)
+    refresh(dice, freeze, player, player_options)
+    return options
 
     
-def dice_freeze(x, y, dice, freeze,play):
+
+def dice_freeze(x, y, dice, options, freeze, player):
     # Check if dice are clicked
     for i, d in enumerate(dice_list):
         if d != None:
@@ -327,47 +336,64 @@ def dice_freeze(x, y, dice, freeze,play):
                     freeze[i-1] = 0
                 else:
                     freeze[i-1] = i
-                refresh(dice, freeze,play)
+                refresh(dice, freeze, player)
                 print(freeze)
     # Select an option
-    # for i, sc in enumerate(scorecard_labels_list)
-
+    for i, sc in enumerate(scorecard_labels_dict):
+        instance = scorecard_labels_dict[sc]
+        if instance != None and options != None: 
+            if instance.get_rect(center=(card_pos[i][0]+instance.get_width()//2, card_pos[i][1]+instance.get_height()//2)).collidepoint(x,y):
+                if sc in options.keys() and player.scorecard[sc] == -1:
+                    print(f'"{sc}" selected')
+                    player.scorecard[sc] = options[sc] 
+                    player.player_score += options[sc]
+                    return
 
 def main():
     running = True
     dice = dc.roll(None, None)
+    options = None
 
-    # player_list = player_create()
     p1 = player.Player("Player 1")
+    p2 = player.Player("Player 2")
+    #player_list = player_create()
+    player_list = [p1, p2] 
     turns = 0
     # Initialize board
     freeze = [0,0,0,0,0]
+
+    #intro = base_font.render("Press 'r' to begin the game",True,(255,255,255))
     start()
+
     rolls = 3
+    print(f"{player_list[0].name}'s turn")
+    refresh(dice, freeze)
 
     while running or turns < 13:
-    #for i in range(0,len(player_list)):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return False
-            elif event.type == pygame.KEYDOWN:
-                # Start game
-                if event.key == pygame.K_r:
-                    if rolls > 0:
-                        rolls -= 1
-                        dice = dc.roll(dice, freeze)
-                        dice_roll(p1, dice, freeze, rolls)
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                # Select Dice
-                x,y = event.pos
-                dice_freeze(x, y, dice, freeze, p1)
-        #turns += 1    
+        for p in player_list:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return False
+                elif event.type == pygame.KEYDOWN:
+                    # Start game
+                    if event.key == pygame.K_r:
+                        if rolls > 0:
+                            rolls -= 1
+                            dice = dc.roll(dice, freeze)
+                            #options = dice_roll(p1, dice, freeze, rolls)
+                            options = dice_roll(p, dice, freeze, rolls)
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    # Select Dice
+                    x,y = event.pos
+                    dice_freeze(x, y, dice, options, freeze, p)
+                    print(f"{p.name}'s turn")
+                    refresh(dice=None, freeze=None)
+                    break
 
-        pygame.display.flip()
-        # Constrain FPS
-        clock.tick(FPS)
-    
-    # End of game slide
+            pygame.display.flip()
+            # Constrain FPS
+            clock.tick(FPS)
+        turns += 1    
 
     # end(player_list)
 

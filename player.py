@@ -27,7 +27,7 @@ class Player:
     def validate(self, options):
         # Marks the current player's scorecard
         for category in self.scorecard:
-            if not (self.scorecard[category] == 0 and options[category] > 0): 
+            if not (self.scorecard[category] == -1 and options[category] > -1): 
                 options.pop(category)
         return options
 
