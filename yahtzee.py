@@ -36,14 +36,14 @@ dice4 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice4.jpg"), (WI
 dice5 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice5.jpg"), (WIDTH//14, HEIGHT//12))
 dice6 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice6.jpg"), (WIDTH//14, HEIGHT//12))
 # Load scoreboard assets
-aces_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/aces_label.jpg"), (QUARTER_WIDTH*0.9, HEIGHT//13))
-twos_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/twos_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
-threes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/threes_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
-fours_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/fours_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
-fives_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/fives_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
-sixes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/sixes_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
-upper_selection_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/upper_selection.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
-value_box_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/value_box.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
+aces_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/aces_label.jpg"), (QUARTER_WIDTH*1.1, HEIGHT//13))
+twos_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/twos_label.jpg"),(QUARTER_WIDTH*1.1, HEIGHT//13)) 
+threes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/threes_label.jpg"),(QUARTER_WIDTH*1.1, HEIGHT//13)) 
+fours_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/fours_label.jpg"),(QUARTER_WIDTH*1.1, HEIGHT//13)) 
+fives_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/fives_label.jpg"),(QUARTER_WIDTH*1.1, HEIGHT//13)) 
+sixes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/sixes_label.jpg"),(QUARTER_WIDTH*1.1, HEIGHT//13)) 
+value_box_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/value_box.jpg"),(QUARTER_WIDTH*0.2, HEIGHT//13)) 
+upper_selection_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/upper_selection.jpg"),(aces_sc.get_width()+value_box_sc.get_width(), HEIGHT//13)) 
 
 # Indexed list to reference all the faces
 global dice_list
@@ -210,21 +210,32 @@ def refresh(dice, freeze, playername=None, player_options=None, player_score=Non
     window.blit(title_label, (WIDTH//2 - title_label.get_width()//2, 250))
     window.blit(score_label, (QUARTER_WIDTH//2 - score_label.get_width()//2, HEIGHT-40))
 
-
     # Repaint scorecard
-    window.blit(upper_selection_sc, (25, 50))
-    window.blit(aces_sc, (25, 100))
+    window.blit(upper_selection_sc, (25, 5))
+    window.blit(aces_sc, (25, 60))
+    window.blit(twos_sc, (25, 110))
+    window.blit(threes_sc, (25, 160))
+    window.blit(fours_sc, (25, 210))
+    window.blit(fives_sc, (25, 260))
+    window.blit(sixes_sc, (25, 310))
+    
+    window.blit(value_box_sc, (25+aces_sc.get_width(), 60))
+    window.blit(value_box_sc, (25+aces_sc.get_width(), 110))
+    window.blit(value_box_sc, (25+aces_sc.get_width(), 160))
+    window.blit(value_box_sc, (25+aces_sc.get_width(), 210))
+    window.blit(value_box_sc, (25+aces_sc.get_width(), 260))
+    window.blit(value_box_sc, (25+aces_sc.get_width(), 310))
 
-    window.blit(scoreboard, (25, 50))
-    if playername != None:
-        window.blit(playername,(620,50))
+    #window.blit(scoreboard, (25, 50))
+    #if playername != None:
+    #    window.blit(playername,(620,50))
 
     #window.blit(scoreboard, (3*QUARTER_WIDTH-25, 50))
     
     # Paint the dice faces
     if dice != None and freeze != None:
         for i, (die, f) in enumerate(zip(dice, freeze)):
-            width = (1.4+(i*0.4))*QUARTER_WIDTH
+            width = (1.7+(i*0.4))*QUARTER_WIDTH
             height = MIDDLE_HEIGHT
             if f != 0:
                 pygame.draw.rect(window, (255,0,0), pygame.Rect(width-5, height-5, 105, 80))
@@ -260,7 +271,8 @@ def main():
     running = True
     dice = dc.roll(None, None)
 
-    player_list = player_create()
+    #player_list = player_create()
+    p1 = player.Player("Player 1")
     turns = 0
     # Initialize board
     freeze = [0,0,0,0,0]
@@ -269,22 +281,22 @@ def main():
     rolls = 3
 
     while running or turns < 13:
-        for i in range(0,len(player_list)):
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    return False
-                elif event.type == pygame.KEYDOWN:
-                    # Start game
-                    if event.key == pygame.K_r:
-                        if rolls > 0:
-                            rolls += -1
-                            dice = dc.roll(dice, freeze)
-                            dice_roll(player_list[i], dice, freeze,rolls)
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    # Select Dice
-                    x,y = event.pos
-                    dice_freeze(x,y, dice, freeze,player_list[i])
-        turns += 1    
+    #for i in range(0,len(player_list)):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
+            elif event.type == pygame.KEYDOWN:
+                # Start game
+                if event.key == pygame.K_r:
+                    if rolls > 0:
+                        rolls -= 1
+                        dice = dc.roll(dice, freeze)
+                        dice_roll(p1, dice, freeze, rolls)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Select Dice
+                x,y = event.pos
+                dice_freeze(x, y, dice, freeze, p1)
+        #turns += 1    
 
         pygame.display.flip()
         # Constrain FPS
