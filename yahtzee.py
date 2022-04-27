@@ -352,26 +352,27 @@ def main():
     running = True
     dice = dc.roll(None, None)
     player_list = player_create()
-    print(player_list)
-    p1 = player.Player("Player 1")
-    p2 = player.Player("Player 2")
+    turns = 0
     # Initialize board
     freeze = [0,0,0,0,0]
     refresh(dice, freeze)
 
     while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return False
-            elif event.type == pygame.KEYDOWN:
-                # Start game
-                if event.key == pygame.K_r:
-                    dice = dc.roll(dice, freeze)
-                    dice_roll(p1, dice, freeze)
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                # Select Dice
-                x,y = event.pos
-                dice_freeze(x,y, dice, freeze)
+        while turns < 13:
+            for i in range(0,len(player_list)):
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        return False
+                    elif event.type == pygame.KEYDOWN:
+                        # Start game
+                        if event.key == pygame.K_r:
+                            dice = dc.roll(dice, freeze)
+                            dice_roll(player_list[i], dice, freeze)
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                        # Select Dice
+                        x,y = event.pos
+                        dice_freeze(x,y, dice, freeze)
+            turns += 1    
 
         pygame.display.flip()
         # Constrain FPS
