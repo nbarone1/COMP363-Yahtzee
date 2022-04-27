@@ -12,7 +12,8 @@ HEIGHT = 750
 FPS = 60
 QUARTER_WIDTH = WIDTH//4
 MIDDLE_HEIGHT = HEIGHT//2
-ASSET_PATH = '/home/nick/github_repos/yahtzee/assets'
+PATH = os.getcwd()
+ASSET_PATH = f"{PATH}/assets"
 
 # Init pygame
 pygame.init()
@@ -300,7 +301,7 @@ def main():
     running = True
     dice = dc.roll(None, None)
 
-    #player_list = player_create()
+    # player_list = player_create()
     p1 = player.Player("Player 1")
     turns = 0
     # Initialize board
@@ -332,7 +333,7 @@ def main():
     
     # End of game slide
 
-    end(player_list)
+    # end(player_list)
 
     # End Game via entering a key
 
