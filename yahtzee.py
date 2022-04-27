@@ -48,7 +48,8 @@ upper_selection_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/sco
 # Indexed list to reference all the faces
 global dice_list
 dice_list = [None, dice1, dice2, dice3, dice4, dice5, dice6]
-scorecard_labels_list = [aces_sc, twos_sc, threes_sc, fours_sc, fives_sc, sixes_sc]
+scorecard_labels_dict = {"aces" : aces_sc, "twos": twos_sc, "threes" : threes_sc, "fours" : fours_sc, "fives" : fives_sc, "sixes" : sixes_sc}
+#scorecard_labels_list = [aces_sc, twos_sc, threes_sc, fours_sc, fives_sc, sixes_sc]
 pygame.display.set_icon(dice6)
 
 # Dimensions for card labels and value box labels
@@ -218,7 +219,7 @@ def refresh(dice, freeze, playername=None, player_options=None, player_score=Non
 
     # Repaint scorecard
     window.blit(upper_selection_sc, (25, 5))
-    for i, sc  in enumerate(scorecard_labels_list):
+    for i, sc  in enumerate(scorecard_labels_dict.values()):
         window.blit(sc, card_pos[i])
         window.blit(value_box_sc, value_box_pos[i])
 
@@ -265,7 +266,10 @@ def dice_freeze(x, y, dice, freeze,play):
                 refresh(dice, freeze,play)
                 print(freeze)
     # Select an option
-    for i, sc in enumerate(scorecard_labels_list)
+    for i, sc in enumerate(scorecard_labels_dict.values()):
+        if sc != None: 
+            if sc.get_rect(center=card_pos[i]).collidepoint(x,y):
+                print("yes")
 
 
 def main():
