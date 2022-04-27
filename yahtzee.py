@@ -177,6 +177,7 @@ def player_numbers():
             #update how long should pass
             clock.tick(60)
 
+
 def create_player(x):
     # create individual players
 
@@ -249,6 +250,7 @@ def player_create():
 def start():
     window.blit(title_slide,(0,0))
 
+
 def end(player_list):
     winner = ""
     max = 0
@@ -310,7 +312,6 @@ def dice_roll(player, dice, freeze,rolls):
     refresh(dice, freeze, player, player_options, rolls)
     return options
 
-    
 
 def dice_freeze(x, y, dice, options, freeze, player):
     # Check if dice are clicked
@@ -332,7 +333,7 @@ def dice_freeze(x, y, dice, options, freeze, player):
                 if sc in options.keys() and player.scorecard[sc] == -1:
                     print(f'"{sc}" selected')
                     player.scorecard[sc] = options[sc] 
-                    player.player_score += options[sc]
+                    player.player_score = player.player_score+options[sc] if options[sc] > 0 else 0
                     # Return value true if selection is made
                     return True
         #return False
@@ -373,7 +374,6 @@ def main():
                     if rolls > 0:
                         rolls -= 1
                         dice = dc.roll(dice, freeze)
-                        #options = dice_roll(p1, dice, freeze, rolls)
                         options = dice_roll(curr_player, dice, freeze, rolls)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 # Select Dice
