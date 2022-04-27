@@ -22,6 +22,23 @@ class Player:
             "yahtzee" : -1, 
             "chance" : -1
         }
+
+    def gen_optioncard(self):
+        return  { 
+            "aces" : 0, 
+            "twos" : 0,
+            "threes" : 0,
+            "fours" : 0,
+            "fives" : 0,
+            "sixes" : 0,
+            "3-kind" : 0,
+            "4-kind" : 0,
+            "full-house" : 0,
+            "sm-straight" : 0,
+            "lg-straight" : 0,
+            "yahtzee" : 0, 
+            "chance" : 0
+    }
       
     # Valid option if it is not in current player's scorecard
     def validate(self, options):
@@ -34,7 +51,7 @@ class Player:
 
     def player_options(self, dice):
         # List of possible scores the player could take
-        options = self.gen_scorecard()
+        options = self.gen_optioncard()
         # Values - represents the count of each values; position is the dice value, 
         # value is the number of roles (Values must add up to 5, should be the case if dice len is 5)
         values = [0,0,0,0,0,0]
