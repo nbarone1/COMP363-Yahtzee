@@ -23,6 +23,8 @@ window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Yahtzee")
 
 # Fonts and Text
+base_font = pygame.font.SysFont("courier new", 24)
+s_font = pygame.font.SysFont("courier new", 36)
 title_font = pygame.font.SysFont("courier new", 24)
 score_font = pygame.font.SysFont("courier new", 24)
 options_font = pygame.font.SysFont("courier new", 10)
@@ -111,9 +113,6 @@ clock = pygame.time.Clock()
 # input rect
 input_rect = pygame.Rect(600, 400, 140, 32)
 
-# define font
-base_font = pygame.font.SysFont("courier new", 24)
-s_font = pygame.font.SysFont("courier new", 36)
 
 def player_numbers():
     # set number of players 
@@ -254,14 +253,16 @@ def start():
 
 def end(player_list):
     winner = ""
+    winner_name = ""
     max_score = 0
     for i in range(0,len(player_list)):
         if player_list[i].player_score >= max_score:
             max_score = player_list[i].player_score
-            winner = player_list[i].name
-            winnings = base_font.render(f"{winner} wins with a score of {max_score}", True, (255,255,255))
+            winner = player_list[i]
+            winner_name = winner.name
+            winnings = base_font.render(f"{winner_name} wins with a score of {max_score}", True, (255,255,255))
         if player_list[i].player_score == max_score:
-            winnings = base_font.render(f'{winner} and {player_list[i].name} tied', True, (255,255,255))
+            winnings = base_font.render(f'{winner_name} and {player_list[i].name} tied', True, (255,255,255))
             #winnings = f'{winner} and {player_list[i].name} tied'
     
     #winnings = base_font.render(f"{winner} wins with a score of {max_score}", True, (255,255,255))
@@ -269,6 +270,8 @@ def end(player_list):
 
     window.blit(game_over,(0,0))
     window.blit(winnings,((WIDTH//2 - winnings.get_width()//2),HEIGHT//2))
+    score_label = score_font.render(f"{winner_name} score: {winner.player_score}", True, (255, 255, 255))
+    window.blit(score_label, (WIDTH//2-score_label.get_width()//2, HEIGHT//2+100))
     #window.blit(quit_message,((WIDTH//2 - quit_message.get_width()//2),(HEIGHT//2)-winnings.get_height()//2-quit_message.get_height()))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -287,10 +290,13 @@ def refresh(dice, freeze, player=None, player_options=None, rolls=None, options=
         window.blit(sc, card_pos[i])
         window.blit(value_box_sc, value_box_pos[i])
 
-    # Print Player's Name on Top
+    # Print Player's Name on Top and score below scorecard
     if player != None:
         player_displayname = base_font.render(f"{player.name}'s Turn with {rolls} rolls remaining", True,(255,255,255))
         window.blit(player_displayname,(620,50))
+        score_label = score_font.render(f"Score: {player.player_score}", True, (255, 255, 255))
+        window.blit(score_label, (QUARTER_WIDTH-175, HEIGHT-35))
+
         skeys = list(player.scorecard.keys())
         for i in range(0,len(skeys)):
             if player.scorecard.get(skeys[i])>-1:
@@ -364,17 +370,14 @@ def main():
     freeze = [0,0,0,0,0]
     rolls = 3
 
-    #intro = base_font.render("Press 'r' to begin the game",True,(255,255,255))
     start()
 
     selection_made = False
-    #print(f"{player_list[0].name}'s turn")
-    #refresh(dice, freeze, rolls=rolls)
 
     count=0
     curr_player = player_list[count]
 
-    while running:# and turns < 2:
+    while running:
         # Check for game over
         if turns > 1:
             end(player_list)
@@ -411,7 +414,6 @@ def main():
         # Constrain FPS
         clock.tick(FPS)
 
-    # End Game via entering a key
 
 if __name__=='__main__':
     main()
