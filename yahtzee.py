@@ -207,7 +207,7 @@ def player_create():
     player_list = []
     numplayer = int(player_numbers())
     print(numplayer)
-    for x in range(numplayer):
+    for x in range(1,numplayer):
         create_player(player_list,numplayer)
 
 # Mark scorcard with current player selection. Update scorecard
