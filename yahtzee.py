@@ -12,7 +12,7 @@ HEIGHT = 750
 FPS = 60
 QUARTER_WIDTH = WIDTH//4
 MIDDLE_HEIGHT = HEIGHT//2
-ASSET_PATH = f"{os.getcwd()}\\assets" 
+ASSET_PATH = '/home/nick/github_repos/yahtzee/assets'
 
 # Init pygame
 pygame.init()
@@ -28,13 +28,22 @@ options_font = pygame.font.SysFont("firacode", 16)
 title_label = title_font.render("Press 'r' to roll dice", True, (255, 255, 255))
 score_label = score_font.render("Score:", True, (255, 255, 255))
 
-# Load images
-dice1 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\alt-die\\dice1.svg"), (WIDTH//14, HEIGHT//12))
-dice2 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\alt-die\\dice2.svg"), (WIDTH//14, HEIGHT//12))
-dice3 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\alt-die\\dice3.svg"), (WIDTH//14, HEIGHT//12))
-dice4 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\alt-die\\dice4.svg"), (WIDTH//14, HEIGHT//12))
-dice5 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\alt-die\\dice5.svg"), (WIDTH//14, HEIGHT//12))
-dice6 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\alt-die\\dice6.svg"), (WIDTH//14, HEIGHT//12))
+# Load dice 
+dice1 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice1.jpg"), (WIDTH//14, HEIGHT//12))
+dice2 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice2.jpg"), (WIDTH//14, HEIGHT//12))
+dice3 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice3.jpg"), (WIDTH//14, HEIGHT//12))
+dice4 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice4.jpg"), (WIDTH//14, HEIGHT//12))
+dice5 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice5.jpg"), (WIDTH//14, HEIGHT//12))
+dice6 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice6.jpg"), (WIDTH//14, HEIGHT//12))
+# Load scoreboard assets
+aces_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/aces_label.jpg"), (QUARTER_WIDTH*0.9, HEIGHT//13))
+twos_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/twos_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
+threes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/threes_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
+fours_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/fours_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
+fives_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/fives_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
+sixes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/sixes_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
+upper_selection_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/upper_selection.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
+value_box_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/value_box.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
 
 # Indexed list to reference all the faces
 global dice_list
@@ -42,10 +51,11 @@ dice_list = [None, dice1, dice2, dice3, dice4, dice5, dice6]
 pygame.display.set_icon(dice6)
 
 # Game Background
-background = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\gameboard.jpg"), (WIDTH, HEIGHT))
-
+background = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/gameboard.jpg"), (WIDTH, HEIGHT))
 # Scorecard
-scoreboard = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\scorecard.png"), (QUARTER_WIDTH, MIDDLE_HEIGHT*1.75))
+scoreboard = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard.png"), (QUARTER_WIDTH, MIDDLE_HEIGHT*1.75))
+title_slide = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/title_screen.jpg"), (WIDTH, HEIGHT))
+game_over = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/game_over.jpg"), (WIDTH, HEIGHT))
 
 # Clock to dictate FPS
 clock = pygame.time.Clock()
@@ -132,8 +142,11 @@ def create_player(x):
     prompt_label = base_font.render("Enter Player #{} Name: ".format(x),True, (255, 255, 255))
     name = ""
     user_text = ""
-    while True:
+    running = True
+    while running:
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if input_rect.collidepoint(event.pos):
                     active = True
@@ -196,9 +209,16 @@ def refresh(dice, freeze, playername=None, player_options=None, player_score=Non
     window.blit(background, (0, 0))
     window.blit(title_label, (WIDTH//2 - title_label.get_width()//2, 250))
     window.blit(score_label, (QUARTER_WIDTH//2 - score_label.get_width()//2, HEIGHT-40))
+
+
+    # Repaint scorecard
+    window.blit(upper_selection_sc, (25, 50))
+    window.blit(aces_sc, (25, 100))
+
     window.blit(scoreboard, (25, 50))
     if playername != None:
         window.blit(playername,(620,50))
+
     #window.blit(scoreboard, (3*QUARTER_WIDTH-25, 50))
     
     # Paint the dice faces
@@ -239,6 +259,7 @@ def dice_freeze(x, y, dice, freeze,play):
 def main():
     running = True
     dice = dc.roll(None, None)
+
     player_list = player_create()
     turns = 0
     # Initialize board
