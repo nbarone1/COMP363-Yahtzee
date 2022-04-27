@@ -262,7 +262,7 @@ def end(player_list):
             winner_name = winner.name
             winnings = base_font.render(f"{winner_name} wins with a score of {max_score}", True, (255,255,255))
         if player_list[i].player_score == max_score:
-            winnings = base_font.render(f'{winner_name} and {player_list[i].name} tied', True, (255,255,255))
+            winnings = base_font.render('Tie game', True, (255,255,255))
             #winnings = f'{winner} and {player_list[i].name} tied'
     
     #winnings = base_font.render(f"{winner} wins with a score of {max_score}", True, (255,255,255))
@@ -291,20 +291,21 @@ def refresh(dice, freeze, player=None, player_options=None, rolls=None, options=
         window.blit(value_box_sc, value_box_pos[i])
 
     # Print Player's Name on Top and score below scorecard
-    if player != None:
+    if player: 
         player_displayname = base_font.render(f"{player.name}'s Turn with {rolls} rolls remaining", True,(255,255,255))
         window.blit(player_displayname,(620,50))
         score_label = score_font.render(f"Score: {player.player_score}", True, (255, 255, 255))
         window.blit(score_label, (QUARTER_WIDTH-175, HEIGHT-35))
 
         skeys = list(player.scorecard.keys())
-        for i in range(0,len(skeys)):
-            if player.scorecard.get(skeys[i])>-1:
-                score_render = s_font.render(f"{player.scorecard.get(skeys[i])}",True,(255,0,0))
-                window.blit(score_render,(value_box_pos[i]))
-            else:
-                option_render = s_font.render(f"{options.get(skeys[i])}",True,(0,0,0))
-                window.blit(option_render,(value_box_pos[i]))
+        if options:
+            for i in range(0,len(skeys)):
+                if player.scorecard.get(skeys[i])>-1:
+                    score_render = s_font.render(f"{player.scorecard.get(skeys[i])}",True,(255,0,0))
+                    window.blit(score_render,(value_box_pos[i]))
+                else:
+                    option_render = s_font.render(f"{options.get(skeys[i])}",True,(0,0,0))
+                    window.blit(option_render,(value_box_pos[i]))
 
     # Paint the dice faces
     if dice != None and freeze != None:
@@ -323,7 +324,7 @@ def refresh(dice, freeze, player=None, player_options=None, rolls=None, options=
 # Returns options
 def dice_roll(player, dice, freeze,rolls):
     options = player.player_options(dice)
-    print(options)
+    #print(options)
 
     # Edit options label to current options
     player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
@@ -379,7 +380,7 @@ def main():
 
     while running:
         # Check for game over
-        if turns > 1:
+        if turns > 13:
             end(player_list)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -404,12 +405,16 @@ def main():
                     # Reset values 
                     rolls = 3
                     freeze = [0,0,0,0,0]
-                    refresh(dice, freeze, rolls=rolls)
                     print(f'{curr_player.name} turn over')
                     # Switch to the next player
                     count +=1
                     turns += 1    
-                    curr_player = player_list[count] if count < len(player_list) else player_list[0]
+                    if count < len(player_list):
+                        curr_player = player_list[count]
+                    else:
+                        curr_player = player_list[0]
+                        count=0
+                    refresh(dice, freeze, player=curr_player, rolls=rolls)
         pygame.display.flip()
         # Constrain FPS
         clock.tick(FPS)
