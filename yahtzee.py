@@ -190,12 +190,14 @@ def player_create():
     return player_list
 
 
-def refresh(dice, freeze, player_options=None, player_score=None):
+def refresh(dice, freeze, playername=None, player_options=None, player_score=None):
     # Repaint the screen
     window.blit(background, (0, 0))
     window.blit(title_label, (WIDTH//2 - title_label.get_width()//2, 250))
     window.blit(score_label, (QUARTER_WIDTH//2 - score_label.get_width()//2, HEIGHT-40))
     window.blit(scoreboard, (25, 50))
+    if playername != None:
+        window.blit(playername,(620,50))
     #window.blit(scoreboard, (3*QUARTER_WIDTH-25, 50))
     
     # Paint the dice faces
@@ -214,12 +216,14 @@ def refresh(dice, freeze, player_options=None, player_score=None):
 
 def dice_roll(player, dice, freeze):
     options = player.player_options(dice)
+    # Print Player's Name on Top
+    player_name = base_font.render(f"{player.name}'s Turn", True,(255,255,255))
     # Edit options label to current options
     player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
-    refresh(dice, freeze, player_options)
+    refresh(dice, freeze, player_name,player_options)
 
     
-def dice_freeze(x, y, dice, freeze):
+def dice_freeze(x, y, dice, freeze,play):
     for i, d in enumerate(dice_list):
         if d != None:
             coords = ((1.4+((i-1)*0.4))*QUARTER_WIDTH+(WIDTH//28), MIDDLE_HEIGHT+HEIGHT//22)
@@ -228,7 +232,7 @@ def dice_freeze(x, y, dice, freeze):
                     freeze[i-1] = 0
                 else:
                     freeze[i-1] = i
-                refresh(dice, freeze)
+                refresh(dice, freeze,play)
                 print(freeze)
 
 def main():
@@ -238,7 +242,8 @@ def main():
     turns = 0
     # Initialize board
     freeze = [0,0,0,0,0]
-    refresh(dice, freeze)
+    intro = base_font.render("Press 'r' to begin the game",True,(255,255,255))
+    refresh(dice, freeze,intro)
 
     while running or turns < 13:
         for i in range(0,len(player_list)):
@@ -253,7 +258,7 @@ def main():
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     # Select Dice
                     x,y = event.pos
-                    dice_freeze(x,y, dice, freeze)
+                    dice_freeze(x,y, dice, freeze,player_list[i])
         turns += 1    
 
         pygame.display.flip()
