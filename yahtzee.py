@@ -139,7 +139,7 @@ def player_numbers():
             #update how long should pass
             clock.tick(60)
 
-def create_player(playerlist, x):
+def create_player(x):
     # create individual players
 
     # color for input background and letters
@@ -166,8 +166,7 @@ def create_player(playerlist, x):
 
                 if event.key == pygame.K_RETURN:
                     name = user_text
-                    playerlist.append(player.Player(name))
-                    return False
+                    return player.Player(name)
     
                 # Check for backspace
                 if event.key == pygame.K_BACKSPACE:
@@ -206,9 +205,9 @@ def player_create():
     # create player list
     player_list = []
     numplayer = int(player_numbers())
-    print(numplayer)
-    for x in range(1,numplayer):
-        create_player(player_list,numplayer)
+    for x in range(1,numplayer+1):
+        player_list.append(create_player(x))
+    return player_list
 
 # Mark scorcard with current player selection. Update scorecard
 def gameloop(player, dice=None, rerolls=2):
@@ -353,6 +352,7 @@ def main():
     running = True
     dice = dc.roll(None, None)
     player_list = player_create()
+    print(player_list)
     p1 = player.Player("Player 1")
     p2 = player.Player("Player 2")
     # Initialize board
