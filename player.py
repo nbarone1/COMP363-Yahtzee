@@ -39,7 +39,6 @@ class Player:
         values = [0,0,0,0,0,0]
         for die in dice:
             values[die-1] += 1
-        print('values: ', values)
         #print(f'debug counts of dice: {values}')
         total = 0 
         # Upper section scoring
