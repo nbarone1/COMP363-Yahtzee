@@ -58,7 +58,7 @@ value_box_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard
 # Indexed list to reference all the faces
 global dice_list
 dice_list = [None, dice1, dice2, dice3, dice4, dice5, dice6]
-scorecard_labels_dict ={"aces" : aces_sc, "twos": twos_sc, "threes" : threes_sc, "fours" : fours_sc, "fives" : fives_sc, "sixes" : sixes_sc,"3-kind" : tofakind_sc,"4-kind" : fofakind_sc,"full-house" : fullhouse_sc,"sm-straight" : smstr_sc,"lg-straight" :lgstr_sc,"yahzee" : yahtzee_sc,"chance" : chance_sc}
+scorecard_labels_dict ={"aces" : aces_sc, "twos": twos_sc, "threes" : threes_sc, "fours" : fours_sc, "fives" : fives_sc, "sixes" : sixes_sc,"3-kind" : tofakind_sc,"4-kind" : fofakind_sc,"full-house" : fullhouse_sc,"sm-straight" : smstr_sc,"lg-straight" :lgstr_sc,"yahtzee" : yahtzee_sc,"chance" : chance_sc}
 
 pygame.display.set_icon(dice6)
 card_width = aces_sc.get_width()
@@ -92,7 +92,6 @@ value_box_pos = [(25+card_width,60),
                  (25+card_width,610),
                  (25+card_width,660),
                  (25+card_width,710)] 
-
 
 # Game Background
 background = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/gameboard.jpg"), (WIDTH, HEIGHT))
@@ -208,7 +207,7 @@ def create_player(x):
                     return player.Player(name)
                 # Check for backspace
                 if event.key == pygame.K_BACKSPACE:
-                    # get text input from 0 to -1 i.e. end.
+                    # get text input from 0 to -1 i.e. end
                     user_text = user_text[:-1]
                 # Unicode standard is used for string
                 # formation
@@ -300,13 +299,14 @@ def refresh(dice, freeze, player=None, player_options=None, rolls=None):
             
     # Paint player options
     if player_options != None:
-        window.blit(player_options, (QUARTER_WIDTH*2 - player_options.get_width()//2, HEIGHT//2+100))
+        window.blit(player_options, (QUARTER_WIDTH*2 - player_options.get_width()//2+100, HEIGHT//2+100))
 
 
 # Returns options
 def dice_roll(player, dice, freeze,rolls):
     options = player.player_options(dice)
     print(options)
+
     # Edit options label to current options
     player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
     refresh(dice, freeze, player, player_options, rolls)
