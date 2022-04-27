@@ -62,14 +62,27 @@ card_pos = [(25,60),
             (25,260), 
             (25,310),
             (25,360),
-            ]
+            (25,410),
+            (25,460),
+            (25,510),
+            (25,560),
+            (25,610),
+            (25,660),
+            (25,710)]
 value_box_pos = [(25+card_width,60),
                  (25+card_width,110),
                  (25+card_width,160), 
                  (25+card_width,210), 
                  (25+card_width,260), 
                  (25+card_width,310),
-                 (25+card_width,360)] 
+                 (25+card_width,360),
+                 (25+card_width,410),
+                 (25+card_width,460),
+                 (25+card_width,510),
+                 (25+card_width,560),
+                 (25+card_width,610),
+                 (25+card_width,660),
+                 (25+card_width,710)] 
 
 
 # Game Background
