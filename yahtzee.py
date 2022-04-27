@@ -211,11 +211,10 @@ def player_create():
     return player_list
 
 
-def refresh(dice, freeze, playername=None, player_options=None, player_score=None):
+def refresh(dice, freeze, player=None, player_options=None):
     # Repaint the screen
     window.blit(background, (0, 0))
     window.blit(title_label, (WIDTH//2 - title_label.get_width()//2, 250))
-    window.blit(score_label, (QUARTER_WIDTH//2 - score_label.get_width()//2, HEIGHT-40))
 
     # Repaint scorecard
     window.blit(upper_selection_sc, (25, 5))
@@ -223,20 +222,21 @@ def refresh(dice, freeze, playername=None, player_options=None, player_score=Non
         window.blit(sc, card_pos[i])
         window.blit(value_box_sc, value_box_pos[i])
 
+    if player:
+        score_label = score_font.render(f"Score: {player.player_score}", True, (255, 255, 255))
+        window.blit(score_label, (QUARTER_WIDTH//2 - score_label.get_width()//2, HEIGHT-40))
 
     #window.blit(scoreboard, (25, 50))
     #if playername != None:
-    #    window.blit(playername,(620,50))
+    #    window.blit(player.name,(620,50))
 
-    #window.blit(scoreboard, (3*QUARTER_WIDTH-25, 50))
-    
     # Paint the dice faces
     if dice != None and freeze != None:
         for i, (die, f) in enumerate(zip(dice, freeze)):
             width = (1.7+(i*0.4))*QUARTER_WIDTH
             height = MIDDLE_HEIGHT
             if f != 0:
-                pygame.draw.rect(window, (255,0,0), pygame.Rect(width-5, height-5, 105, 80))
+                pygame.draw.rect(window, (255,0,0), pygame.Rect(width-5, height-5, 103, 75))
             window.blit(dice_list[die], [width, height])
             
     # Paint player options
@@ -244,16 +244,19 @@ def refresh(dice, freeze, playername=None, player_options=None, player_score=Non
         window.blit(player_options, (QUARTER_WIDTH*2 - player_options.get_width()//2, HEIGHT//2+100))
 
 
+# Returns options
 def dice_roll(player, dice, freeze,rolls):
     options = player.player_options(dice)
+    print(options)
     # Print Player's Name on Top
     player_name = base_font.render(f"{player.name}'s Turn with {rolls} rolls remaining", True,(255,255,255))
     # Edit options label to current options
     player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
-    refresh(dice, freeze, player_name,player_options)
+    refresh(dice, freeze, player, player_options)
+    return options
 
     
-def dice_freeze(x, y, dice, freeze,play):
+def dice_freeze(x, y, dice, options, freeze, player):
     # Check if dice are clicked
     for i, d in enumerate(dice_list):
         if d != None:
@@ -263,26 +266,31 @@ def dice_freeze(x, y, dice, freeze,play):
                     freeze[i-1] = 0
                 else:
                     freeze[i-1] = i
-                refresh(dice, freeze,play)
+                refresh(dice, freeze, player)
                 print(freeze)
     # Select an option
-    for i, sc in enumerate(scorecard_labels_dict.values()):
-        if sc != None: 
-            if sc.get_rect(center=card_pos[i]).collidepoint(x,y):
-                print("yes")
-
+    for i, sc in enumerate(scorecard_labels_dict):
+        instance = scorecard_labels_dict[sc]
+        if instance != None and options != None: 
+            if instance.get_rect(center=(card_pos[i][0]+instance.get_width()//2, card_pos[i][1]+instance.get_height()//2)).collidepoint(x,y):
+                if sc in options.keys() and player.scorecard[sc] == -1:
+                    print(f'"{sc}" selected')
+                    player.scorecard[sc] = options[sc] 
+                    player.player_score += options[sc]
+                    return
 
 def main():
     running = True
     dice = dc.roll(None, None)
+    options = None
 
     #player_list = player_create()
     p1 = player.Player("Player 1")
     turns = 0
     # Initialize board
     freeze = [0,0,0,0,0]
-    intro = base_font.render("Press 'r' to begin the game",True,(255,255,255))
-    refresh(dice, freeze, intro)
+    #intro = base_font.render("Press 'r' to begin the game",True,(255,255,255))
+    refresh(dice, freeze)
     rolls = 3
 
     while running or turns < 13:
@@ -296,11 +304,11 @@ def main():
                     if rolls > 0:
                         rolls -= 1
                         dice = dc.roll(dice, freeze)
-                        dice_roll(p1, dice, freeze, rolls)
+                        options = dice_roll(p1, dice, freeze, rolls)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 # Select Dice
                 x,y = event.pos
-                dice_freeze(x, y, dice, freeze, p1)
+                dice_freeze(x, y, dice, options, freeze, p1)
         #turns += 1    
 
         pygame.display.flip()
