@@ -8,25 +8,25 @@ class Player:
 
     def gen_scorecard(self):
         return  { 
-            "aces" : 0, 
-            "twos" : 0,
-            "threes" : 0,
-            "fours" : 0,
-            "fives" : 0,
-            "sixes" : 0,
-            "3-kind" : 0,
-            "4-kind" : 0,
-            "full-house" : 0,
-            "sm-straight" : 0,
-            "lg-straight" : 0,
-            "yahtzee" : 0
+            "aces" : -1, 
+            "twos" : -1,
+            "threes" : -1,
+            "fours" : -1,
+            "fives" : -1,
+            "sixes" : -1,
+            "3-kind" : -1,
+            "4-kind" : -1,
+            "full-house" : -1,
+            "sm-straight" : -1,
+            "lg-straight" : -1,
+            "yahtzee" : -1 
         }
       
     # Valid option if it is not in current player's scorecard
     def validate(self, options):
         # Marks the current player's scorecard
         for category in self.scorecard:
-            if not (self.scorecard[category] == 0 and options[category] > 0): 
+            if not (self.scorecard[category] == -1 and options[category] > -1): 
                 options.pop(category)
         return options
 
