@@ -48,7 +48,13 @@ upper_selection_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/sco
 # Indexed list to reference all the faces
 global dice_list
 dice_list = [None, dice1, dice2, dice3, dice4, dice5, dice6]
+scorecard_labels_list = [aces_sc, twos_sc, threes_sc, fours_sc, fives_sc, sixes_sc]
 pygame.display.set_icon(dice6)
+
+# Dimensions for card labels and value box labels
+card_pos = [(25,60), (25,110), (25,160), (25,210), (25,260), (25,310)]
+value_box_pos = [(25+aces_sc.get_width(),60), (25+aces_sc.get_width(),110), (25+aces_sc.get_width(),160), (25+aces_sc.get_width(),210), (25+aces_sc.get_width(),260), (25+aces_sc.get_width(),310)] 
+
 
 # Game Background
 background = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/gameboard.jpg"), (WIDTH, HEIGHT))
@@ -212,19 +218,10 @@ def refresh(dice, freeze, playername=None, player_options=None, player_score=Non
 
     # Repaint scorecard
     window.blit(upper_selection_sc, (25, 5))
-    window.blit(aces_sc, (25, 60))
-    window.blit(twos_sc, (25, 110))
-    window.blit(threes_sc, (25, 160))
-    window.blit(fours_sc, (25, 210))
-    window.blit(fives_sc, (25, 260))
-    window.blit(sixes_sc, (25, 310))
-    
-    window.blit(value_box_sc, (25+aces_sc.get_width(), 60))
-    window.blit(value_box_sc, (25+aces_sc.get_width(), 110))
-    window.blit(value_box_sc, (25+aces_sc.get_width(), 160))
-    window.blit(value_box_sc, (25+aces_sc.get_width(), 210))
-    window.blit(value_box_sc, (25+aces_sc.get_width(), 260))
-    window.blit(value_box_sc, (25+aces_sc.get_width(), 310))
+    for i, sc  in enumerate(scorecard_labels_list):
+        window.blit(sc, card_pos[i])
+        window.blit(value_box_sc, value_box_pos[i])
+
 
     #window.blit(scoreboard, (25, 50))
     #if playername != None:
@@ -256,6 +253,7 @@ def dice_roll(player, dice, freeze,rolls):
 
     
 def dice_freeze(x, y, dice, freeze,play):
+    # Check if dice are clicked
     for i, d in enumerate(dice_list):
         if d != None:
             coords = ((1.4+((i-1)*0.4))*QUARTER_WIDTH+(WIDTH//28), MIDDLE_HEIGHT+HEIGHT//22)
@@ -266,6 +264,7 @@ def dice_freeze(x, y, dice, freeze,play):
                     freeze[i-1] = i
                 refresh(dice, freeze,play)
                 print(freeze)
+
 
 def main():
     running = True
