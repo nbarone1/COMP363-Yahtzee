@@ -28,14 +28,22 @@ options_font = pygame.font.SysFont("firacode", 16)
 title_label = title_font.render("Press 'r' to roll dice", True, (255, 255, 255))
 score_label = score_font.render("Score:", True, (255, 255, 255))
 
-# Load images
-dice1 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\alt-die\\dice1.svg"), (WIDTH//14, HEIGHT//12))
-dice2 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\alt-die\\dice2.svg"), (WIDTH//14, HEIGHT//12))
-dice3 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\alt-die\\dice3.svg"), (WIDTH//14, HEIGHT//12))
-dice4 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\alt-die\\dice4.svg"), (WIDTH//14, HEIGHT//12))
-dice5 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\alt-die\\dice5.svg"), (WIDTH//14, HEIGHT//12))
-dice6 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\alt-die\\dice6.svg"), (WIDTH//14, HEIGHT//12))
-
+# Load dice 
+dice1 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice1.jpg"), (WIDTH//14, HEIGHT//12))
+dice2 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice2.jpg"), (WIDTH//14, HEIGHT//12))
+dice3 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice3.jpg"), (WIDTH//14, HEIGHT//12))
+dice4 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice4.jpg"), (WIDTH//14, HEIGHT//12))
+dice5 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice5.jpg"), (WIDTH//14, HEIGHT//12))
+dice6 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice6.jpg"), (WIDTH//14, HEIGHT//12))
+# Load scoreboard assets
+aces_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/aces_label.jpg"), (QUARTER_WIDTH*0.9, HEIGHT//13))
+twos_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/twos_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
+threes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/threes_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
+fours_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/fours_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
+fives_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/fives_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
+sixes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/sixes_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
+upper_selection_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/upper_selection.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
+value_box_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/value_box.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
 # Indexed list to reference all the faces
 global dice_list
 dice_list = [None, dice1, dice2, dice3, dice4, dice5, dice6]
@@ -47,11 +55,15 @@ background = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\gameboard.
 # Scorecard
 scoreboard = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\scorecard.png"), (QUARTER_WIDTH, MIDDLE_HEIGHT*1.75))
 
+# start/finish slides
+title_slide = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/title_screen.jpg"), (WIDTH, HEIGHT))
+game_over = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/game_over.jpg"), (WIDTH, HEIGHT))
+
 # Clock to dictate FPS
 clock = pygame.time.Clock()
 
 # input rect
-input_rect = pygame.Rect(200, 200, 140, 32)
+input_rect = pygame.Rect(600, 400, 140, 32)
 
 # define font
 base_font = pygame.font.Font(None, 32)
@@ -191,6 +203,31 @@ def player_create():
     return player_list
 
 
+def start():
+    window.blit(title_slide,(0,0))
+
+def end(player_list):
+    winner = ""
+    max = 0
+    for i in range(0,len(player_list)):
+        if player_list[i].player_score > max:
+            max = player_list[i].player_score
+            winner = player_list[i].name
+        if player_list[i].player_score == max:
+            winner = winner," and ",player_list[i].name," tied"
+    
+    winnings = base_font.render(f"{winner} wins with a score of {max}", True, (255,255,255))
+    quit_message = options_font.render("Press any key to exit",True,(255,255,255))
+
+    window.blit(game_over,(0,0))
+    window.blit(winnings,((WIDTH//2 - winnings.get_width()//2),HEIGHT//2))
+    window.blit(quit_message,((WIDTH//2 - quit_message.get_width()//2),(HEIGHT//2)-winnings.get_height()//2-quit_message.get_height()))
+
+    for event in pygame.event.get():
+        if event.type is pygame.KEYDOWN:
+            pygame.quit()
+
+
 def refresh(dice, freeze, playername=None, player_options=None, player_score=None):
     # Repaint the screen
     window.blit(background, (0, 0))
@@ -243,8 +280,7 @@ def main():
     turns = 0
     # Initialize board
     freeze = [0,0,0,0,0]
-    intro = base_font.render("Press 'r' to begin the game",True,(255,255,255))
-    refresh(dice, freeze, intro)
+    start()
     rolls = 3
 
     while running or turns < 13:
@@ -268,9 +304,12 @@ def main():
         pygame.display.flip()
         # Constrain FPS
         clock.tick(FPS)
+    
+    # End of game slide
 
-    pygame.quit()
+    end(player_list)
 
+    # End Game via entering a key
 
 if __name__=='__main__':
     main()
