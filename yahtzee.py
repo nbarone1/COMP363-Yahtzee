@@ -23,9 +23,9 @@ window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Yahtzee")
 
 # Fonts and Text
-title_font = pygame.font.SysFont("firacode", 32)
-score_font = pygame.font.SysFont("firacode", 32)
-options_font = pygame.font.SysFont("firacode", 16)
+title_font = pygame.font.SysFont("corier new", 32)
+score_font = pygame.font.SysFont("corier new", 32)
+options_font = pygame.font.SysFont("corier new", 16)
 
 title_label = title_font.render("Press 'r' to roll dice", True, (255, 255, 255))
 score_label = score_font.render("Score:", True, (255, 255, 255))
@@ -112,8 +112,8 @@ clock = pygame.time.Clock()
 input_rect = pygame.Rect(600, 400, 140, 32)
 
 # define font
-base_font = pygame.font.Font(None, 32)
-s_font = pygame.font.Font(None, 64)
+base_font = pygame.font.SysFont("corier new", 32)
+s_font = pygame.font.SysFont("corier new", 64)
 
 def player_numbers():
     # set number of players 
