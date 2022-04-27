@@ -362,10 +362,7 @@ def main():
     dice = dc.roll(None, None)
     options = None
 
-    p1 = player.Player("Player 1")
-    p2 = player.Player("Player 2")
-    #player_list = player_create()
-    player_list = [p1, p2] 
+    player_list = player_create()
     turns = 0
     # Initialize board
     freeze = [0,0,0,0,0]
