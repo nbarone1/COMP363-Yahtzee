@@ -1,5 +1,6 @@
 import enum
 from gc import freeze
+from numpy import rollaxis
 import pygame
 import os
 import player
@@ -203,15 +204,21 @@ def player_create():
     return player_list
 
 
-def refresh(dice, freeze, player_options=None, player_score=None):
+def refresh(dice, freeze, playername=None, player_options=None, player_score=None):
     # Repaint the screen
     window.blit(background, (0, 0))
     window.blit(title_label, (WIDTH//2 - title_label.get_width()//2, 250))
     window.blit(score_label, (QUARTER_WIDTH//2 - score_label.get_width()//2, HEIGHT-40))
 
+
     # Repaint scorecard
     window.blit(upper_selection_sc, (25, 50))
     window.blit(aces_sc, (25, 100))
+
+    window.blit(scoreboard, (25, 50))
+    if playername != None:
+        window.blit(playername,(620,50))
+
     #window.blit(scoreboard, (3*QUARTER_WIDTH-25, 50))
     
     # Paint the dice faces
@@ -228,14 +235,16 @@ def refresh(dice, freeze, player_options=None, player_score=None):
         window.blit(player_options, (QUARTER_WIDTH*2 - player_options.get_width()//2, HEIGHT//2+100))
 
 
-def dice_roll(player, dice, freeze):
+def dice_roll(player, dice, freeze,rolls):
     options = player.player_options(dice)
+    # Print Player's Name on Top
+    player_name = base_font.render(f"{player.name}'s Turn with {rolls} rolls remaining", True,(255,255,255))
     # Edit options label to current options
     player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
-    refresh(dice, freeze, player_options)
+    refresh(dice, freeze, player_name,player_options)
 
     
-def dice_freeze(x, y, dice, freeze):
+def dice_freeze(x, y, dice, freeze,play):
     for i, d in enumerate(dice_list):
         if d != None:
             coords = ((1.4+((i-1)*0.4))*QUARTER_WIDTH+(WIDTH//28), MIDDLE_HEIGHT+HEIGHT//22)
@@ -244,34 +253,38 @@ def dice_freeze(x, y, dice, freeze):
                     freeze[i-1] = 0
                 else:
                     freeze[i-1] = i
-                refresh(dice, freeze)
+                refresh(dice, freeze,play)
                 print(freeze)
 
 def main():
     running = True
     dice = dc.roll(None, None)
-    #player_list = player_create()
-    #print(player_list)
-    p1 = player.Player("Player 1")
-    p2 = player.Player("Player 2")
+
+    player_list = player_create()
+    turns = 0
     # Initialize board
     freeze = [0,0,0,0,0]
-    #window.blit(title_slide, (0, 0))
-    refresh(dice, freeze)
+    intro = base_font.render("Press 'r' to begin the game",True,(255,255,255))
+    refresh(dice, freeze, intro)
+    rolls = 3
 
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return False
-            elif event.type == pygame.KEYDOWN:
-                # Start game
-                if event.key == pygame.K_r:
-                    dice = dc.roll(dice, freeze)
-                    dice_roll(p1, dice, freeze)
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                # Select Dice
-                x,y = event.pos
-                dice_freeze(x,y, dice, freeze)
+    while running or turns < 13:
+        for i in range(0,len(player_list)):
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return False
+                elif event.type == pygame.KEYDOWN:
+                    # Start game
+                    if event.key == pygame.K_r:
+                        if rolls > 0:
+                            rolls += -1
+                            dice = dc.roll(dice, freeze)
+                            dice_roll(player_list[i], dice, freeze,rolls)
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    # Select Dice
+                    x,y = event.pos
+                    dice_freeze(x,y, dice, freeze,player_list[i])
+        turns += 1    
 
         pygame.display.flip()
         # Constrain FPS
