@@ -1,6 +1,7 @@
 import enum
 from gc import freeze
-from numpy import rollaxis
+from numpy import full, rollaxis
+import py
 import pygame
 import os
 import player
@@ -13,7 +14,7 @@ FPS = 60
 QUARTER_WIDTH = WIDTH//4
 MIDDLE_HEIGHT = HEIGHT//2
 PATH = os.getcwd()
-ASSET_PATH = f"{PATH}/github_repos/yahtzee/assets"
+ASSET_PATH = f"{PATH}/assets"
 
 # Init pygame
 pygame.init()
@@ -37,21 +38,62 @@ dice4 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice4.jpg"), (WI
 dice5 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice5.jpg"), (WIDTH//14, HEIGHT//12))
 dice6 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice6.jpg"), (WIDTH//14, HEIGHT//12))
 # Load scoreboard assets
-aces_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/aces_label.jpg"), (QUARTER_WIDTH*1.1, HEIGHT//13))
-twos_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/twos_label.jpg"),(QUARTER_WIDTH*1.1, HEIGHT//13)) 
-threes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/threes_label.jpg"),(QUARTER_WIDTH*1.1, HEIGHT//13)) 
-fours_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/fours_label.jpg"),(QUARTER_WIDTH*1.1, HEIGHT//13)) 
-fives_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/fives_label.jpg"),(QUARTER_WIDTH*1.1, HEIGHT//13)) 
-sixes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/sixes_label.jpg"),(QUARTER_WIDTH*1.1, HEIGHT//13)) 
-value_box_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/value_box.jpg"),(QUARTER_WIDTH*0.2, HEIGHT//13)) 
-upper_selection_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/upper_selection.jpg"),(aces_sc.get_width()+value_box_sc.get_width(), HEIGHT//13)) 
+
+
+aces_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/aces_label.jpg"), (QUARTER_WIDTH*0.75, HEIGHT//13))
+twos_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/twos_label.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
+threes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/threes_label.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
+fours_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/fours_label.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
+fives_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/fives_label.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
+sixes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/sixes_label.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
+upper_selection_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/upper_selection.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
+tofakind_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/3ofakind.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13))
+fofakind_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/4ofakind.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13))
+chance_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/Chance.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
+fullhouse_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/Full_House.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
+lgstr_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/Lg_Straight.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13))
+smstr_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/Sm_Straight.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13))
+yahtzee_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/Yahtzee.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13))
+value_box_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/value_box.jpg"),(QUARTER_WIDTH*0.15, HEIGHT//13)) 
 
 # Indexed list to reference all the faces
 global dice_list
 dice_list = [None, dice1, dice2, dice3, dice4, dice5, dice6]
-scorecard_labels_dict = {"aces" : aces_sc, "twos": twos_sc, "threes" : threes_sc, "fours" : fours_sc, "fives" : fives_sc, "sixes" : sixes_sc}
-#scorecard_labels_list = [aces_sc, twos_sc, threes_sc, fours_sc, fives_sc, sixes_sc]
+scorecard_labels_dict ={"aces" : aces_sc, "twos": twos_sc, "threes" : threes_sc, "fours" : fours_sc, "fives" : fives_sc, "sixes" : sixes_sc,"3-kind" : tofakind_sc,"4-kind" : fofakind_sc,"full-house" : fullhouse_sc,"sm-straight" : smstr_sc,"lg-straight" :lgstr_sc,"yahzee" : yahtzee_sc,"chance" : chance_sc}
+
 pygame.display.set_icon(dice6)
+card_width = aces_sc.get_width()
+
+# Dimensions for card labels and value box labels
+card_pos = [(25,60),
+            (25,110), 
+            (25,160), 
+            (25,210), 
+            (25,260), 
+            (25,310),
+            (25,360),
+            (25,410),
+            (25,460),
+            (25,510),
+            (25,560),
+            (25,610),
+            (25,660),
+            (25,710)]
+value_box_pos = [(25+card_width,60),
+                 (25+card_width,110),
+                 (25+card_width,160), 
+                 (25+card_width,210), 
+                 (25+card_width,260), 
+                 (25+card_width,310),
+                 (25+card_width,360),
+                 (25+card_width,410),
+                 (25+card_width,460),
+                 (25+card_width,510),
+                 (25+card_width,560),
+                 (25+card_width,610),
+                 (25+card_width,660),
+                 (25+card_width,710)] 
+
 
 # Dimensions for card labels and value box labels
 card_pos = [(25,60), (25,110), (25,160), (25,210), (25,260), (25,310)]
@@ -252,9 +294,6 @@ def refresh(dice, freeze, player=None, player_options=None):
         window.blit(sc, card_pos[i])
         window.blit(value_box_sc, value_box_pos[i])
 
-    if player:
-        score_label = score_font.render(f"Score: {player.player_score}", True, (255, 255, 255))
-        window.blit(score_label, (QUARTER_WIDTH//2 - score_label.get_width()//2, HEIGHT-40))
 
     #window.blit(scoreboard, (25, 50))
     #if player.name != None:
@@ -286,6 +325,7 @@ def dice_roll(player, dice, freeze,rolls):
     return options
 
     
+
 def dice_freeze(x, y, dice, options, freeze, player):
     # Check if dice are clicked
     for i, d in enumerate(dice_list):
@@ -355,7 +395,7 @@ def main():
             clock.tick(FPS)
         turns += 1    
 
-    end(player_list)
+    # end(player_list)
 
     # End Game via entering a key
 

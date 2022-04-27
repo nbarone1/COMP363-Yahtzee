@@ -19,7 +19,8 @@ class Player:
             "full-house" : -1,
             "sm-straight" : -1,
             "lg-straight" : -1,
-            "yahtzee" : -1 
+            "yahtzee" : -1, 
+            "chance" : -1
         }
       
     # Valid option if it is not in current player's scorecard
