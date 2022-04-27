@@ -1,6 +1,7 @@
 import enum
 from gc import freeze
-from numpy import rollaxis
+from numpy import full, rollaxis
+import py
 import pygame
 import os
 import player
@@ -38,19 +39,26 @@ dice5 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice5.jpg"), (WI
 dice6 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice6.jpg"), (WIDTH//14, HEIGHT//12))
 # Load scoreboard assets
 
-aces_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/aces_label.jpg"), (QUARTER_WIDTH*0.9, HEIGHT//13))
-twos_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/twos_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
-threes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/threes_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
-fours_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/fours_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
-fives_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/fives_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
-sixes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/sixes_label.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
+aces_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/aces_label.jpg"), (QUARTER_WIDTH*0.75, HEIGHT//13))
+twos_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/twos_label.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
+threes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/threes_label.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
+fours_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/fours_label.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
+fives_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/fives_label.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
+sixes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/sixes_label.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
 upper_selection_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/upper_selection.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
-value_box_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/value_box.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
+tofakind_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/3ofakind.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13))
+fofakind_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/4ofakind.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13))
+chance_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/Chance.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
+fullhouse_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/Full_House.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
+lgstr_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/Lg_Straight.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13))
+smstr_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/Sm_Straight.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13))
+yahtzee_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/Yahtzee.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13))
+value_box_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/value_box.jpg"),(QUARTER_WIDTH*0.15, HEIGHT//13)) 
 
 # Indexed list to reference all the faces
 global dice_list
 dice_list = [None, dice1, dice2, dice3, dice4, dice5, dice6]
-scorecard_labels_list = [aces_sc, twos_sc, threes_sc, fours_sc, fives_sc, sixes_sc]
+scorecard_labels_list = [aces_sc, twos_sc, threes_sc, fours_sc, fives_sc, sixes_sc,tofakind_sc,fofakind_sc,fullhouse_sc,smstr_sc,lgstr_sc,yahtzee_sc,chance_sc]
 pygame.display.set_icon(dice6)
 card_width = aces_sc.get_width()
 
@@ -322,7 +330,7 @@ def dice_freeze(x, y, dice, freeze,play):
                 refresh(dice, freeze,play)
                 print(freeze)
     # Select an option
-    for i, sc in enumerate(scorecard_labels_list)
+    # for i, sc in enumerate(scorecard_labels_list)
 
 
 def main():
