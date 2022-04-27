@@ -12,7 +12,8 @@ HEIGHT = 750
 FPS = 60
 QUARTER_WIDTH = WIDTH//4
 MIDDLE_HEIGHT = HEIGHT//2
-ASSET_PATH = '/home/nick/github_repos/yahtzee/assets'
+PATH = os.getcwd()
+ASSET_PATH = f"{PATH}/assets"
 
 # Init pygame
 pygame.init()
