@@ -52,10 +52,24 @@ global dice_list
 dice_list = [None, dice1, dice2, dice3, dice4, dice5, dice6]
 scorecard_labels_list = [aces_sc, twos_sc, threes_sc, fours_sc, fives_sc, sixes_sc]
 pygame.display.set_icon(dice6)
+card_width = aces_sc.get_width()
 
 # Dimensions for card labels and value box labels
-card_pos = [(25,60), (25,110), (25,160), (25,210), (25,260), (25,310)]
-value_box_pos = [(25+aces_sc.get_width(),60), (25+aces_sc.get_width(),110), (25+aces_sc.get_width(),160), (25+aces_sc.get_width(),210), (25+aces_sc.get_width(),260), (25+aces_sc.get_width(),310)] 
+card_pos = [(25,60),
+            (25,110), 
+            (25,160), 
+            (25,210), 
+            (25,260), 
+            (25,310),
+            (25,360),
+            ]
+value_box_pos = [(25+card_width,60),
+                 (25+card_width,110),
+                 (25+card_width,160), 
+                 (25+card_width,210), 
+                 (25+card_width,260), 
+                 (25+card_width,310),
+                 (25+card_width,360)] 
 
 
 # Game Background
