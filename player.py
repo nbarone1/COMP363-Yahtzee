@@ -39,7 +39,7 @@ class Player:
         values = [0,0,0,0,0,0]
         for die in dice:
             values[die-1] += 1
-
+        print('values: ', values)
         #print(f'debug counts of dice: {values}')
         total = 0 
         # Upper section scoring
@@ -82,7 +82,7 @@ class Player:
                 options['lg-straight'] = 40
         
             # Yahtzee!
-            if v == 6:
+            if v == 5:
                 options['yahtzee'] = 50
         
         # Return valid dict of options

@@ -23,7 +23,7 @@ title_font = pygame.font.SysFont("firacode", 32)
 score_font = pygame.font.SysFont("firacode", 32)
 options_font = pygame.font.SysFont("firacode", 16)
 
-title_label = title_font.render("Would You like to roll? Y/N", True, (255, 255, 255))
+title_label = title_font.render("Press 'r' to roll dice", True, (255, 255, 255))
 score_label = score_font.render("Score:", True, (255, 255, 255))
 player_options = options_font.render("Options: ", True, (255, 255, 255))
 
@@ -55,13 +55,13 @@ def refresh(dice, freeze, player_options=None, player_score=None):
     window.blit(background, (0, 0))
     window.blit(title_label, (WIDTH//2 - title_label.get_width()//2, 250))
     window.blit(score_label, (QUARTER_WIDTH//2 - score_label.get_width()//2, HEIGHT-40))
-    #window.blit(scoreboard, (25, 50))
+    window.blit(scoreboard, (25, 50))
     #window.blit(scoreboard, (3*QUARTER_WIDTH-25, 50))
     
     # Paint the dice faces
     if dice != None and freeze != None:
         for i, (die, f) in enumerate(zip(dice, freeze)):
-            width = (1.1+(i*0.4))*QUARTER_WIDTH
+            width = (1.4+(i*0.4))*QUARTER_WIDTH
             height = MIDDLE_HEIGHT
             if f != 0:
                 pygame.draw.rect(window, (255,0,0), pygame.Rect(width-5, height-5, 105, 80))
@@ -78,10 +78,11 @@ def dice_roll(player, dice, freeze):
     player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
     refresh(dice, freeze, player_options)
 
+
 def dice_freeze(x, y, dice, freeze):
     for i, d in enumerate(dice_list):
         if d != None:
-            coords = ((1.1+((i-1)*0.4))*QUARTER_WIDTH+(WIDTH//28), MIDDLE_HEIGHT+HEIGHT//22)
+            coords = ((1.4+((i-1)*0.4))*QUARTER_WIDTH+(WIDTH//28), MIDDLE_HEIGHT+HEIGHT//22)
             if d.get_rect(center=coords).collidepoint(x,y):
                 if freeze[i-1] != 0:
                     freeze[i-1] = 0
@@ -89,7 +90,7 @@ def dice_freeze(x, y, dice, freeze):
                     freeze[i-1] = i
                 refresh(dice, freeze)
                 print(freeze)
-    #refresh(dice, freeze)
+
 
 def main():
     running = True
