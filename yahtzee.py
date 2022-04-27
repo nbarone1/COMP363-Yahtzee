@@ -267,7 +267,7 @@ def end(player_list):
             winner = winner," and ",player_list[i].name," tied"
     
     winnings = base_font.render(f"{winner} wins with a score of {max}", True, (255,255,255))
-    quit_message = options_font.render("Press any key to exit",True,(255,255,255))
+    quit_message = options_font.render("Press any key to exit", True, (255,255,255))
 
     window.blit(game_over,(0,0))
     window.blit(winnings,((WIDTH//2 - winnings.get_width()//2),HEIGHT//2))
