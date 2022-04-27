@@ -279,7 +279,7 @@ def end(player_list):
             pygame.quit()
 
 
-def refresh(dice, freeze, player=None, player_options=None):
+def refresh(dice, freeze, player_p=None, player_options=None):
     # Repaint the screen
     window.blit(background, (0, 0))
     window.blit(title_label, (WIDTH//2 - title_label.get_width()//2, 250))
@@ -292,8 +292,8 @@ def refresh(dice, freeze, player=None, player_options=None):
 
 
     #window.blit(scoreboard, (25, 50))
-    #if player.name != None:
-    #    window.blit(player.name,(620,50))
+    #if player_p != None:
+        #window.blit(player_p,(620,50))
 
     # Paint the dice faces
     if dice != None and freeze != None:
@@ -314,10 +314,10 @@ def dice_roll(player, dice, freeze,rolls):
     options = player.player_options(dice)
     print(options)
     # Print Player's Name on Top
-    player_name = base_font.render(f"{player.name}'s Turn with {rolls} rolls remaining", True,(255,255,255))
+    player_p = base_font.render(f"{player.name}'s Turn with {rolls} rolls remaining", True,(255,255,255))
     # Edit options label to current options
     player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
-    refresh(dice, freeze, player, player_options)
+    refresh(dice, freeze, player_p, player_options)
     return options
 
     
@@ -376,7 +376,6 @@ def main():
                         if rolls > 0:
                             rolls -= 1
                             dice = dc.roll(dice, freeze)
-                            #options = dice_roll(p1, dice, freeze, rolls)
                             options = dice_roll(p, dice, freeze, rolls)
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     # Select Dice
