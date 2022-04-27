@@ -317,8 +317,8 @@ def refresh(dice, freeze, player=None, player_options=None, rolls=None, options=
             window.blit(dice_list[die], [width, height])
             
     # Paint player options
-    if player_options != None:
-        window.blit(player_options, (QUARTER_WIDTH*2 - player_options.get_width()//2+100, HEIGHT//2+100))
+    #if player_options != None:
+    #    window.blit(player_options, (QUARTER_WIDTH*2 - player_options.get_width()//2+100, HEIGHT//2+100))
 
 
 # Returns options
@@ -377,7 +377,7 @@ def main():
 
     while running:
         # Check for game over
-        if turns > 13:
+        if turns > 4:
             end(player_list)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
