@@ -23,10 +23,11 @@ window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Yahtzee")
 
 # Fonts and Text
-base_font = pygame.font.SysFont("courier new", 32)
-title_font = pygame.font.SysFont("courier new", 32)
-score_font = pygame.font.SysFont("courier new", 32)
-options_font = pygame.font.SysFont("courier new", 16)
+base_font = pygame.font.SysFont("courier new", 24)
+s_font = pygame.font.SysFont("courier new", 36)
+title_font = pygame.font.SysFont("courier new", 24)
+score_font = pygame.font.SysFont("courier new", 24)
+options_font = pygame.font.SysFont("courier new", 10)
 
 title_label = title_font.render("Press 'r' to roll dice", True, (255, 255, 255))
 score_label = score_font.render("Score:", True, (255, 255, 255))
@@ -278,7 +279,7 @@ def end(player_list):
 
 
 
-def refresh(dice, freeze, player=None, player_options=None, rolls=None):
+def refresh(dice, freeze, player=None, player_options=None, rolls=None, options=None):
     # Repaint the screen
     window.blit(background, (0, 0))
     window.blit(title_label, (WIDTH//2 - title_label.get_width()//2, 250))
@@ -295,6 +296,15 @@ def refresh(dice, freeze, player=None, player_options=None, rolls=None):
         window.blit(player_displayname,(620,50))
         score_label = score_font.render(f"Score: {player.player_score}", True, (255, 255, 255))
         window.blit(score_label, (QUARTER_WIDTH-175, HEIGHT-35))
+
+        skeys = list(player.scorecard.keys())
+        for i in range(0,len(skeys)):
+            if player.scorecard.get(skeys[i])>-1:
+                score_render = s_font.render(f"{player.scorecard.get(skeys[i])}",True,(255,0,0))
+                window.blit(score_render,(value_box_pos[i]))
+            else:
+                option_render = s_font.render(f"{options.get(skeys[i])}",True,(0,0,0))
+                window.blit(option_render,(value_box_pos[i]))
 
     # Paint the dice faces
     if dice != None and freeze != None:
@@ -317,7 +327,7 @@ def dice_roll(player, dice, freeze,rolls):
 
     # Edit options label to current options
     player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
-    refresh(dice, freeze, player, player_options, rolls)
+    refresh(dice, freeze, player, player_options, rolls, options)
     return options
 
 
@@ -360,17 +370,14 @@ def main():
     freeze = [0,0,0,0,0]
     rolls = 3
 
-    #intro = base_font.render("Press 'r' to begin the game",True,(255,255,255))
     start()
 
     selection_made = False
-    #print(f"{player_list[0].name}'s turn")
-    #refresh(dice, freeze, rolls=rolls)
 
     count=0
     curr_player = player_list[count]
 
-    while running:# and turns < 2:
+    while running:
         # Check for game over
         if turns > 1:
             end(player_list)
@@ -407,7 +414,6 @@ def main():
         # Constrain FPS
         clock.tick(FPS)
 
-    # End Game via entering a key
 
 if __name__=='__main__':
     main()
