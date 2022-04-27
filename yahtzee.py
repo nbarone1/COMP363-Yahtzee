@@ -112,6 +112,7 @@ input_rect = pygame.Rect(600, 400, 140, 32)
 
 # define font
 base_font = pygame.font.Font(None, 32)
+s_font = pygame.font.Font(None, 64)
 
 def player_numbers():
     # set number of players 
@@ -272,7 +273,7 @@ def end(player_list):
             pygame.quit()
 
 
-def refresh(dice, freeze, player=None, player_options=None, rolls=None):
+def refresh(dice, freeze, player=None, player_options=None, rolls=None, options=None):
     # Repaint the screen
     window.blit(background, (0, 0))
     window.blit(title_label, (WIDTH//2 - title_label.get_width()//2, 250))
@@ -287,6 +288,14 @@ def refresh(dice, freeze, player=None, player_options=None, rolls=None):
     if player != None:
         player_displayname = base_font.render(f"{player.name}'s Turn with {rolls} rolls remaining", True,(255,255,255))
         window.blit(player_displayname,(620,50))
+        skeys = list(player.scorecard.keys())
+        for i in range(0,len(skeys)):
+            if player.scorecard.get(skeys[i])>-1:
+                score_render = s_font.render(f"{player.scorecard.get(skeys[i])}",True,(255,0,0))
+                window.blit(score_render,(value_box_pos[i]))
+            else:
+                option_render = s_font.render(f"{options.get(skeys[i])}",True,(0,0,0))
+                window.blit(option_render,(value_box_pos[i]))
 
     # Paint the dice faces
     if dice != None and freeze != None:
@@ -309,7 +318,7 @@ def dice_roll(player, dice, freeze,rolls):
 
     # Edit options label to current options
     player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
-    refresh(dice, freeze, player, player_options, rolls)
+    refresh(dice, freeze, player, player_options, rolls, options)
     return options
 
 
