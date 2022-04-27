@@ -95,11 +95,6 @@ value_box_pos = [(25+card_width,60),
                  (25+card_width,710)] 
 
 
-# Dimensions for card labels and value box labels
-card_pos = [(25,60), (25,110), (25,160), (25,210), (25,260), (25,310)]
-value_box_pos = [(25+aces_sc.get_width(),60), (25+aces_sc.get_width(),110), (25+aces_sc.get_width(),160), (25+aces_sc.get_width(),210), (25+aces_sc.get_width(),260), (25+aces_sc.get_width(),310)] 
-
-
 # Game Background
 background = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/gameboard.jpg"), (WIDTH, HEIGHT))
 # Scorecard
