@@ -1,7 +1,6 @@
 import enum
 from gc import freeze
 from numpy import full, rollaxis
-import py
 import pygame
 import os
 import player 
