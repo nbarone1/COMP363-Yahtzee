@@ -58,7 +58,7 @@ value_box_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard
 # Indexed list to reference all the faces
 global dice_list
 dice_list = [None, dice1, dice2, dice3, dice4, dice5, dice6]
-scorecard_labels_list = [aces_sc, twos_sc, threes_sc, fours_sc, fives_sc, sixes_sc,tofakind_sc,fofakind_sc,fullhouse_sc,smstr_sc,lgstr_sc,yahtzee_sc,chance_sc]
+scorecard_labels_dict ={"aces" : aces_sc, "twos": twos_sc, "threes" : threes_sc, "fours" : fours_sc, "fives" : fives_sc, "sixes" : sixes_sc,"3-kind" : tofakind_sc,"4-kind" : fofakind_sc,"full-house" : fullhouse_sc,"sm-straight" : smstr_sc,"lg-straight" :lgstr_sc,"yahzee" : yahtzee_sc,"chance" : chance_sc}
 pygame.display.set_icon(dice6)
 card_width = aces_sc.get_width()
 
@@ -284,7 +284,7 @@ def refresh(dice, freeze, playername=None, player_options=None, player_score=Non
 
     # Repaint scorecard
     window.blit(upper_selection_sc, (25, 5))
-    for i, sc  in enumerate(scorecard_labels_list):
+    for i, sc  in enumerate(scorecard_labels_dict.values()):
         window.blit(sc, card_pos[i])
         window.blit(value_box_sc, value_box_pos[i])
 
