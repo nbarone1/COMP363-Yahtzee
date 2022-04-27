@@ -22,9 +22,10 @@ pygame.display.set_caption("Yahtzee")
 # Fonts and Text
 title_font = pygame.font.SysFont("firacode", 32)
 score_font = pygame.font.SysFont("firacode", 32)
-title_label = title_font.render("Would You like to roll? Y/N", True, (255, 255, 255))
+options_font = pygame.font.SysFont("firacode", 16)
+
+title_label = title_font.render("Press 'r' to roll dice", True, (255, 255, 255))
 score_label = score_font.render("Score:", True, (255, 255, 255))
-options_font = pygame.font.Font(None, 32)
 
 # Load images
 dice1 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}\\alt-die\\dice1.svg"), (WIDTH//14, HEIGHT//12))
@@ -53,28 +54,6 @@ input_rect = pygame.Rect(200, 200, 140, 32)
 
 # define font
 base_font = pygame.font.Font(None, 32)
-
-# Handle user input
-# Returns running status
-def event_handler(player, dice=None):
-    for event in pygame.event.get():
-        # Quit
-        if event.type == pygame.QUIT:
-            return False
-        elif event.type == pygame.KEYDOWN:
-            # Start game
-            if event.key == pygame.K_y:
-                dice = dc.roll()
-                #gameloop(player, dc.roll())
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            x,y = event.pos
-            # Click on dice
-            for die in dice_list:
-                if die.get_rect().collidepoint(x,y):
-                    window.blit()
-                    print("yes")
-        return True
-
 
 def player_numbers():
     # set number of players 
@@ -201,6 +180,7 @@ def create_player(x):
             #update how long should pass
             clock.tick(60)
 
+            
 def player_create():
     # create player list
     player_list = []
@@ -209,115 +189,19 @@ def player_create():
         player_list.append(create_player(x))
     return player_list
 
-# Mark scorcard with current player selection. Update scorecard
-def gameloop(player, dice=None, rerolls=2):
-    # Calculate options based on roll
-    
-    # TODO: Show dice
-
-    options = player.player_options(dice)
-
-def quit(event):
-    if event.type == pygame.QUIT:
-        return False
-
-
-# Handle user input
-# Returns running status
-def keypress(event, player, dice=None):
-    # Quit
-    if quit(event): 
-        return False
-
-    elif event.type == pygame.KEYDOWN:
-        # Start game
-        if event.key == pygame.K_y:
-            refresh(dc.roll())
-            gameloop(player, dc.roll())
-    return True
-
-def mousepress(event):
-    # Quit
-    if quit(event): return False
-
-    elif event.type == pygame.MOUSEBUTTONDOWN:
-        x,y = event.pos
-        for i, d in enumerate(dice_list):
-            if d != None:
-                coords = ((1.3+((i-1)*0.3))*QUARTER_WIDTH+(WIDTH//28), MIDDLE_HEIGHT+HEIGHT//22)
-                if d.get_rect(center=coords).collidepoint(x,y):
-                    print(i)
-
-
-# Mark scorcard with current player selection. Update scorecard
-def gameloop(player, dice, rerolls=2):
-    # Calculate options based on roll
-    
-    # TODO: Show dice
-    options = player.player_options(dice)
-    # Edit options label to current options
-    player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
-    refresh(dice, player_options)
-
-    mousepress(event)
-    '''
-    if rerolls == 0:
-        return
-    elif rerolls > 0:
-        freeze = list(map(int, pick.replace(',', ' ').split()))
-        print(freeze)
-        dice = dice.roll(dice, freeze)
-        rerolls-=1
-        gameloop(dice, player, rerolls)     
-    '''
-
-    '''
-    # TODO: Display list of options
-
-    if rerolls > 0:
-        # TODO: Display text below
-        print('Enter a valid scorecard option, or choose which dice to freeze')
-    else:
-        # TODO: Display text below
-        print('Enter a valid scorecard option')
-
-    # TODO: Integrate a pick option in pygame 
-    pick = input()
-
-    # Base case
-    # Mark scorcard with current player selection. Update scorecard
-    if pick in options.keys():
-        if player.scorecard[pick] == 0:
-            print(f'"{pick}" selected')
-            # TODO: Highlight die that have been selected
-            player.scorecard[pick] = options[pick] 
-            player.player_score += options[pick]
-    elif pick == "":
-        print("Pass")
-    elif rerolls > 0:
-        freeze = list(map(int, pick.replace(',', ' ').split()))
-        print(freeze)
-        dice = dice.roll(dice, freeze)
-        rerolls-=1
-        gameloop(dice, player, rerolls)     
-    else:
-        print("Not a valid option or no rerolls left, select a valid scorecard option")
-        gameloop(dice, player, rerolls)     
-    '''
-
 
 def refresh(dice, freeze, player_options=None, player_score=None):
     # Repaint the screen
     window.blit(background, (0, 0))
     window.blit(title_label, (WIDTH//2 - title_label.get_width()//2, 250))
     window.blit(score_label, (QUARTER_WIDTH//2 - score_label.get_width()//2, HEIGHT-40))
-    #window.blit(scoreboard, (25, 50))
+    window.blit(scoreboard, (25, 50))
     #window.blit(scoreboard, (3*QUARTER_WIDTH-25, 50))
     
     # Paint the dice faces
     if dice != None and freeze != None:
         for i, (die, f) in enumerate(zip(dice, freeze)):
-            width = (1.1+(i*0.4))*QUARTER_WIDTH
+            width = (1.4+(i*0.4))*QUARTER_WIDTH
             height = MIDDLE_HEIGHT
             if f != 0:
                 pygame.draw.rect(window, (255,0,0), pygame.Rect(width-5, height-5, 105, 80))
@@ -338,7 +222,7 @@ def dice_roll(player, dice, freeze):
 def dice_freeze(x, y, dice, freeze):
     for i, d in enumerate(dice_list):
         if d != None:
-            coords = ((1.1+((i-1)*0.4))*QUARTER_WIDTH+(WIDTH//28), MIDDLE_HEIGHT+HEIGHT//22)
+            coords = ((1.4+((i-1)*0.4))*QUARTER_WIDTH+(WIDTH//28), MIDDLE_HEIGHT+HEIGHT//22)
             if d.get_rect(center=coords).collidepoint(x,y):
                 if freeze[i-1] != 0:
                     freeze[i-1] = 0
@@ -346,7 +230,6 @@ def dice_freeze(x, y, dice, freeze):
                     freeze[i-1] = i
                 refresh(dice, freeze)
                 print(freeze)
-
 
 def main():
     running = True
