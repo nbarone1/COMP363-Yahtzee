@@ -1,7 +1,6 @@
 import enum
 from gc import freeze
 from numpy import full, rollaxis
-import py
 import pygame
 import os
 import player 
@@ -178,6 +177,7 @@ def player_numbers():
             #update how long should pass
             clock.tick(60)
 
+
 def create_player(x):
     # create individual players
 
@@ -201,21 +201,15 @@ def create_player(x):
                     active = True
                 else:
                     active = False
-    
             if event.type == pygame.KEYDOWN:
-
                 # If return, create player
-
                 if event.key == pygame.K_RETURN:
                     name = user_text
                     return player.Player(name)
-    
                 # Check for backspace
                 if event.key == pygame.K_BACKSPACE:
-    
                     # get text input from 0 to -1 i.e. end.
                     user_text = user_text[:-1]
-    
                 # Unicode standard is used for string
                 # formation
                 else:
@@ -256,6 +250,7 @@ def player_create():
 def start():
     window.blit(title_slide,(0,0))
 
+
 def end(player_list):
     winner = ""
     max = 0
@@ -267,7 +262,7 @@ def end(player_list):
             winner = winner," and ",player_list[i].name," tied"
     
     winnings = base_font.render(f"{winner} wins with a score of {max}", True, (255,255,255))
-    quit_message = options_font.render("Press any key to exit",True,(255,255,255))
+    quit_message = options_font.render("Press any key to exit", True, (255,255,255))
 
     window.blit(game_over,(0,0))
     window.blit(winnings,((WIDTH//2 - winnings.get_width()//2),HEIGHT//2))
@@ -278,7 +273,7 @@ def end(player_list):
             pygame.quit()
 
 
-def refresh(dice, freeze, player=None, player_options=None):
+def refresh(dice, freeze, player=None, player_options=None, rolls=None):
     # Repaint the screen
     window.blit(background, (0, 0))
     window.blit(title_label, (WIDTH//2 - title_label.get_width()//2, 250))
@@ -289,10 +284,10 @@ def refresh(dice, freeze, player=None, player_options=None):
         window.blit(sc, card_pos[i])
         window.blit(value_box_sc, value_box_pos[i])
 
-
-    #window.blit(scoreboard, (25, 50))
-    #if player.name != None:
-    #    window.blit(player.name,(620,50))
+    # Print Player's Name on Top
+    if player != None:
+        player_displayname = base_font.render(f"{player.name}'s Turn with {rolls} rolls remaining", True,(255,255,255))
+        window.blit(player_displayname,(620,50))
 
     # Paint the dice faces
     if dice != None and freeze != None:
@@ -312,14 +307,11 @@ def refresh(dice, freeze, player=None, player_options=None):
 def dice_roll(player, dice, freeze,rolls):
     options = player.player_options(dice)
     print(options)
-    # Print Player's Name on Top
-    player_name = base_font.render(f"{player.name}'s Turn with {rolls} rolls remaining", True,(255,255,255))
     # Edit options label to current options
     player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
-    refresh(dice, freeze, player, player_options)
+    refresh(dice, freeze, player, player_options, rolls)
     return options
 
-    
 
 def dice_freeze(x, y, dice, options, freeze, player):
     # Check if dice are clicked
@@ -341,7 +333,7 @@ def dice_freeze(x, y, dice, options, freeze, player):
                 if sc in options.keys() and player.scorecard[sc] == -1:
                     print(f'"{sc}" selected')
                     player.scorecard[sc] = options[sc] 
-                    player.player_score += options[sc]
+                    player.player_score = player.player_score+options[sc] if options[sc] > 0 else 0
                     # Return value true if selection is made
                     return True
         #return False
@@ -365,7 +357,7 @@ def main():
 
     selection_made = False
     #print(f"{player_list[0].name}'s turn")
-    refresh(dice, freeze)
+    refresh(dice, freeze, rolls=rolls)
 
     count=0
     curr_player = player_list[count]
@@ -382,7 +374,6 @@ def main():
                     if rolls > 0:
                         rolls -= 1
                         dice = dc.roll(dice, freeze)
-                        #options = dice_roll(p1, dice, freeze, rolls)
                         options = dice_roll(curr_player, dice, freeze, rolls)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 # Select Dice
@@ -395,7 +386,7 @@ def main():
                     # Reset values 
                     rolls = 3
                     freeze = [0,0,0,0,0]
-                    refresh(dice, freeze)
+                    refresh(dice, freeze, rolls=rolls)
                     print(f'{curr_player.name} turn over')
                     # Switch to the next player
                     count +=1
