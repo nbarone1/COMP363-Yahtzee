@@ -39,7 +39,7 @@ scorecard_assets = __init_scorecard()
 # Game Background,
 background_asset = pygame.transform.scale(pygame.image.load(f"{const.ASSET_PATH}/gameboard.jpg"), (const.WIDTH, const.HEIGHT))
 # Scorecard
-scoreboard_asset = pygame.transform.scale(pygame.image.load(f"{const.ASSET_PATH}/scorecard.png"), (const.QUARTER_WIDTH, const.MIDDLE_HEIGHT*1.75))
+board_asset = pygame.transform.scale(pygame.image.load(f"{const.ASSET_PATH}/scorecard.png"), (const.QUARTER_WIDTH, const.MIDDLE_HEIGHT*1.75))
 # Start/end slides
 title_asset = pygame.transform.scale(pygame.image.load(f"{const.ASSET_PATH}/title_screen.jpg"), (const.WIDTH, const.HEIGHT))
 gameover_asset = pygame.transform.scale(pygame.image.load(f"{const.ASSET_PATH}/game_over.jpg"), (const.WIDTH, const.HEIGHT))
@@ -47,9 +47,8 @@ gameover_asset = pygame.transform.scale(pygame.image.load(f"{const.ASSET_PATH}/g
 # Fonts and text
 pygame.font.init()
 base_font = pygame.font.SysFont("courier new", 24)
-s_font = pygame.font.SysFont("courier new", 36)
-med_font = pygame.font.SysFont("courier new", 24)
 options_font = pygame.font.SysFont("courier new", 10)
+large_font = pygame.font.SysFont("courier new", 36)
 
 #print(dice_assets)
 #print('\n', scorecard_assets)

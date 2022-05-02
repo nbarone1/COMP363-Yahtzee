@@ -95,6 +95,7 @@ value_box_pos = [(25+card_width,60),
 background = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/gameboard.jpg"), (WIDTH, HEIGHT))
 # Scorecard
 scoreboard = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard.png"), (QUARTER_WIDTH, MIDDLE_HEIGHT*1.75))
+
 # start/finish slides
 title_slide = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/title_screen.jpg"), (WIDTH, HEIGHT))
 game_over = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/game_over.jpg"), (WIDTH, HEIGHT))
@@ -314,7 +315,7 @@ def refresh(dice, freeze, player=None, player_options=None, rolls=None, options=
 
 
 # Returns options
-def dice_roll(player, dice, freeze,rolls):
+def dice_roll(player, dice, freeze, rolls):
     options = player.player_options(dice)
 
     # Edit options label to current options
