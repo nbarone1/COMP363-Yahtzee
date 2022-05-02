@@ -1,6 +1,3 @@
-import enum
-from gc import freeze
-from numpy import full, rollaxis
 import pygame
 import os
 import sys
@@ -39,9 +36,7 @@ dice3 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice3.jpg"), (WI
 dice4 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice4.jpg"), (WIDTH//14, HEIGHT//12))
 dice5 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice5.jpg"), (WIDTH//14, HEIGHT//12))
 dice6 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice6.jpg"), (WIDTH//14, HEIGHT//12))
-# Load scoreboard assets
-
-
+# Load scorecard assets
 aces_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/aces_label.jpg"), (QUARTER_WIDTH*0.75, HEIGHT//13))
 twos_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/twos_label.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
 threes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/threes_label.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
@@ -59,7 +54,7 @@ yahtzee_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/Y
 value_box_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/value_box.jpg"),(QUARTER_WIDTH*0.15, HEIGHT//13)) 
 
 # Indexed list to reference all the faces
-global dice_list
+#global dice_list
 dice_list = [None, dice1, dice2, dice3, dice4, dice5, dice6]
 scorecard_labels_dict ={"aces" : aces_sc, "twos": twos_sc, "threes" : threes_sc, "fours" : fours_sc, "fives" : fives_sc, "sixes" : sixes_sc,"3-kind" : tofakind_sc,"4-kind" : fofakind_sc,"full-house" : fullhouse_sc,"sm-straight" : smstr_sc,"lg-straight" :lgstr_sc,"yahtzee" : yahtzee_sc,"chance" : chance_sc}
 
@@ -96,13 +91,10 @@ value_box_pos = [(25+card_width,60),
                  (25+card_width,660),
                  (25+card_width,710)] 
 
-# Game Background
+# Game Background,
 background = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/gameboard.jpg"), (WIDTH, HEIGHT))
 # Scorecard
 scoreboard = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard.png"), (QUARTER_WIDTH, MIDDLE_HEIGHT*1.75))
-title_slide = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/title_screen.jpg"), (WIDTH, HEIGHT))
-game_over = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/game_over.jpg"), (WIDTH, HEIGHT))
-
 # start/finish slides
 title_slide = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/title_screen.jpg"), (WIDTH, HEIGHT))
 game_over = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/game_over.jpg"), (WIDTH, HEIGHT))
@@ -125,6 +117,7 @@ def player_numbers():
     color = color_passive
 
     prompt_label = base_font.render("Enter Number of Players: ",True, (255, 255, 255))
+    active = False
 
     numberplayers = ""
     while True:
@@ -192,6 +185,7 @@ def create_player(x):
     name = ""
     user_text = ""
     running = True
+    active = False
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -250,7 +244,6 @@ def player_create():
 def start():
     window.blit(title_slide,(0,0))
 
-
 def end(player_list):
     winner = ""
     winner_name = ""
@@ -276,7 +269,6 @@ def end(player_list):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
            sys.exit(1) 
-
 
 
 def refresh(dice, freeze, player=None, player_options=None, rolls=None, options=None):
@@ -324,7 +316,6 @@ def refresh(dice, freeze, player=None, player_options=None, rolls=None, options=
 # Returns options
 def dice_roll(player, dice, freeze,rolls):
     options = player.player_options(dice)
-    #print(options)
 
     # Edit options label to current options
     player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
