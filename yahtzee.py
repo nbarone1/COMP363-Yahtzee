@@ -206,10 +206,11 @@ class Yahtzee:
 def main():
     running = True
 
-    p1 = pl.Player("Player 1")
-    p2 = pl.Player("Player 2")
-    #player = player_create()
-    players = [p1, p2] 
+    #p1 = pl.Player("Player 1")
+    #p2 = pl.Player("Player 2")
+    #players = [p1, p2]
+    player = player_create()
+    
 
     # Create game state object that tracks player attributes
     game_state = Yahtzee(players)
@@ -219,8 +220,7 @@ def main():
 
     while running:
         # Check for game over
-        #if game_state.turns > 13:
-        if game_state.turns//len(game_state.players) >= 2:
+        if game_state.turns//len(game_state.players) >= 13:
             game_state.end()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -236,7 +236,7 @@ def main():
                 if selection_made:
                     # If a selection is made, reset instance and advance to next player
                     game_state.advance_turn()
-
+                    
         pygame.display.flip()
         # Constrain FPS
         clock.tick(const.FPS)
