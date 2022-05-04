@@ -17,18 +17,16 @@ def __init_scorecard():
             "fours" : None, 
             "fives" : None, 
             "sixes" : None,
-            "3_kind" : None,
-            "4_kind" : None,
-            "full_house" : None,
-            "sm_straight" : None,
-            "lg_straight" :None,
+            "3-kind" : None,
+            "4-kind" : None,
+            "full-house" : None,
+            "sm-straight" : None,
+            "lg-straight" :None,
             "yahtzee" : None,
-            "chance" : None 
+            "chance" : None, 
     }
     for label in scorecard_assets:
         scorecard_assets[label] = pygame.transform.scale(pygame.image.load(f"{const.ASSET_PATH}/scorecard/{label}.jpg"), (const.QUARTER_WIDTH*0.75, const.HEIGHT//13))
-    scorecard_assets['value_box'] = pygame.transform.scale(pygame.image.load(f"{const.ASSET_PATH}/scorecard/value_box.jpg"),(const.QUARTER_WIDTH*0.15, const.HEIGHT//13))  
-    scorecard_assets['upper_section'] = pygame.transform.scale(pygame.image.load(f"{const.ASSET_PATH}/scorecard/upper_section.jpg"),(const.QUARTER_WIDTH*0.9, const.HEIGHT//13)) 
     return scorecard_assets
 
 
@@ -36,6 +34,10 @@ def __init_scorecard():
 # --------------------
 dice_assets = __init_dice()
 scorecard_assets = __init_scorecard()
+
+value_box_asset = pygame.transform.scale(pygame.image.load(f"{const.ASSET_PATH}/scorecard/value_box.jpg"),(const.QUARTER_WIDTH*0.15, const.HEIGHT//13))  
+upper_section_asset = pygame.transform.scale(pygame.image.load(f"{const.ASSET_PATH}/scorecard/upper_section.jpg"),(const.QUARTER_WIDTH*0.9, const.HEIGHT//13)) 
+
 # Game Background,
 background_asset = pygame.transform.scale(pygame.image.load(f"{const.ASSET_PATH}/gameboard.jpg"), (const.WIDTH, const.HEIGHT))
 # Scorecard
