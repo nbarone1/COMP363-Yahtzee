@@ -1,111 +1,22 @@
-import enum
-from gc import freeze
-from numpy import full, rollaxis
 import pygame
 import os
 import sys
-import player 
+# Yahtzee modules
+import const
+import load_assets as la 
+import player as pl
 import dice as dc
-
-# Constants
-WIDTH = 1300
-HEIGHT = 750
-FPS = 60
-QUARTER_WIDTH = WIDTH//4
-MIDDLE_HEIGHT = HEIGHT//2
-PATH = os.getcwd()
-ASSET_PATH = f"{PATH}/assets"
 
 # Init pygame
 pygame.init()
-pygame.font.init()
-window = pygame.display.set_mode((WIDTH, HEIGHT))
+#pygame.font.init()
+window = pygame.display.set_mode((const.WIDTH, const.HEIGHT))
 pygame.display.set_caption("Yahtzee")
+pygame.display.set_icon(la.dice_assets[5])
 
-# Fonts and Text
-base_font = pygame.font.SysFont("courier new", 24)
-s_font = pygame.font.SysFont("courier new", 36)
-title_font = pygame.font.SysFont("courier new", 24)
-score_font = pygame.font.SysFont("courier new", 24)
-options_font = pygame.font.SysFont("courier new", 10)
-
-title_label = title_font.render("Press 'r' to roll dice", True, (255, 255, 255))
-score_label = score_font.render("Score:", True, (255, 255, 255))
-
-# Load dice 
-dice1 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice1.jpg"), (WIDTH//14, HEIGHT//12))
-dice2 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice2.jpg"), (WIDTH//14, HEIGHT//12))
-dice3 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice3.jpg"), (WIDTH//14, HEIGHT//12))
-dice4 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice4.jpg"), (WIDTH//14, HEIGHT//12))
-dice5 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice5.jpg"), (WIDTH//14, HEIGHT//12))
-dice6 = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/dice6.jpg"), (WIDTH//14, HEIGHT//12))
-# Load scoreboard assets
-
-
-aces_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/aces_label.jpg"), (QUARTER_WIDTH*0.75, HEIGHT//13))
-twos_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/twos_label.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
-threes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/threes_label.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
-fours_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/fours_label.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
-fives_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/fives_label.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
-sixes_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/sixes_label.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
-upper_selection_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/upper_selection.jpg"),(QUARTER_WIDTH*0.9, HEIGHT//13)) 
-tofakind_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/3ofakind.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13))
-fofakind_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/4ofakind.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13))
-chance_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/Chance.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
-fullhouse_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/Full_House.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13)) 
-lgstr_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/Lg_Straight.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13))
-smstr_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/Sm_Straight.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13))
-yahtzee_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/Yahtzee.jpg"),(QUARTER_WIDTH*0.75, HEIGHT//13))
-value_box_sc = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard/value_box.jpg"),(QUARTER_WIDTH*0.15, HEIGHT//13)) 
-
-# Indexed list to reference all the faces
-global dice_list
-dice_list = [None, dice1, dice2, dice3, dice4, dice5, dice6]
-scorecard_labels_dict ={"aces" : aces_sc, "twos": twos_sc, "threes" : threes_sc, "fours" : fours_sc, "fives" : fives_sc, "sixes" : sixes_sc,"3-kind" : tofakind_sc,"4-kind" : fofakind_sc,"full-house" : fullhouse_sc,"sm-straight" : smstr_sc,"lg-straight" :lgstr_sc,"yahtzee" : yahtzee_sc,"chance" : chance_sc}
-
-pygame.display.set_icon(dice6)
-card_width = aces_sc.get_width()
-
-# Dimensions for card labels and value box labels
-card_pos = [(25,60),
-            (25,110), 
-            (25,160), 
-            (25,210), 
-            (25,260), 
-            (25,310),
-            (25,360),
-            (25,410),
-            (25,460),
-            (25,510),
-            (25,560),
-            (25,610),
-            (25,660),
-            (25,710)]
-value_box_pos = [(25+card_width,60),
-                 (25+card_width,110),
-                 (25+card_width,160), 
-                 (25+card_width,210), 
-                 (25+card_width,260), 
-                 (25+card_width,310),
-                 (25+card_width,360),
-                 (25+card_width,410),
-                 (25+card_width,460),
-                 (25+card_width,510),
-                 (25+card_width,560),
-                 (25+card_width,610),
-                 (25+card_width,660),
-                 (25+card_width,710)] 
-
-# Game Background
-background = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/gameboard.jpg"), (WIDTH, HEIGHT))
-# Scorecard
-scoreboard = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/scorecard.png"), (QUARTER_WIDTH, MIDDLE_HEIGHT*1.75))
-title_slide = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/title_screen.jpg"), (WIDTH, HEIGHT))
-game_over = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/game_over.jpg"), (WIDTH, HEIGHT))
-
-# start/finish slides
-title_slide = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/title_screen.jpg"), (WIDTH, HEIGHT))
-game_over = pygame.transform.scale(pygame.image.load(f"{ASSET_PATH}/game_over.jpg"), (WIDTH, HEIGHT))
+# Render fonts
+title_label = la.base_font.render("Press 'r' to roll dice", True, (255, 255, 255))
+score_label = la.base_font.render("Score:", True, (255, 255, 255))
 
 # Clock to dictate FPS
 clock = pygame.time.Clock()
@@ -113,309 +24,224 @@ clock = pygame.time.Clock()
 # input rect
 input_rect = pygame.Rect(600, 400, 140, 32)
 
+class Yahtzee:
+    '''Yahtzee class tracks the current game state.
+    This includes the current dice roll, freeze, rolls, and player_options
+    '''
 
-def player_numbers():
-    # set number of players 
+    def __init__(self, players):
+        '''Yahtzee attributes pull from __set_values
+        
+        Params:
+            players: List of player objects
+        Class Attributes:
+            players: ...
+            player: The current player
+            player_options: Dict of scores the player can select
+            dice: List of dice
+            freeze: Freeze option 
+            rolls: Rolls remaining (3 rolls per player)
+            turns: Remaining turns
+        '''
+        self.players = players
+        self.__set_values(players[0], 0)
 
-    window.blit(background, (0, 0))
 
-    # color for input background and letters
-    color_active = pygame.Color('lightskyblue3')
-    color_passive = pygame.Color('chartreuse4')
-    color = color_passive
+    def __set_values(self, player, turns):
+        '''Private function to set the default gamestate values
+        
+        Params:
+            player: The current player
+            turns: Remaining turns
+        '''
+        self.player = player
+        self.player_options = None
+        self.dice = dc.roll(None, None)
+        self.freeze = [0,0,0,0,0] 
+        self.rolls = 3
+        self.turns = turns 
 
-    prompt_label = base_font.render("Enter Number of Players: ",True, (255, 255, 255))
 
-    numberplayers = ""
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if input_rect.collidepoint(event.pos):
-                    active = True
-                else:
-                    active = False
+    def __render(self):
+        '''Private function to render graphics'''
+        # Render text
+        action_label = la.base_font.render("Press 'r' to roll dice", True, (255, 255, 255))
+        rt = 13-(self.turns//len(self.players))
+        print(rt)
+        turns_remaining = la.base_font.render(f"{rt} turns remaining", True, (255, 255, 255))
 
-            if event.type == pygame.KEYDOWN:
+        # Repaint the screen
+        window.blit(la.background_asset, (0, 0))
+        window.blit(action_label, (const.WIDTH//2 - action_label.get_width()//2, 250))
+        window.blit(turns_remaining, (const.WIDTH-turns_remaining.get_width(), const.HEIGHT-30))
 
-                # If return, create player
+        # Repaint scorecard
+        window.blit(la.upper_section_asset, (25, 5))
+        card_width = la.scorecard_assets['aces'].get_width()
 
-                if event.key == pygame.K_RETURN:
-                    return numberplayers
+        
+        for i, sc in enumerate(la.scorecard_assets.values()):
+            card_pos = (25, 60+(i*50))
+            vbox_pos = (25+card_width, 60+(i*50))
+            window.blit(sc, card_pos)
+            window.blit(la.value_box_asset, vbox_pos)
 
-                # Check for backspace
-                if event.key == pygame.K_BACKSPACE:
+        # Print Player's Name on Top and score below scorecard
+        if self.player: 
+            displayname_label = la.base_font.render(f"{self.player.name}'s Turn with {self.rolls} rolls remaining", True,(255,255,255))
+            window.blit(displayname_label,(620,50))
+            score_label = la.base_font.render(f"Score: {self.player.player_score}", True, (255, 255, 255))
+            window.blit(score_label, (const.QUARTER_WIDTH-175, const.HEIGHT-35))
 
-                    # get text input from 0 to -1 i.e. end.
-                    numberplayers = numberplayers[:-1]
+            # Render sc values        
+            if self.player_options:
+                scorecard = self.player.scorecard
+                for i, sc in enumerate(scorecard):
+                    vbox_pos = (25+card_width, 60+(i*50))
+                    if scorecard[sc] > -1: 
+                        score_render = la.large_font.render(f"{scorecard[sc]}", True, (255,0,0))
+                        window.blit(score_render, vbox_pos) 
+                    else:
+                        option_render = la.large_font.render(f"{self.player_options[sc]}", True, (0,0,0))
+                        window.blit(option_render, vbox_pos)
 
-                # Unicode standard is used for string
-                # formation
-                else:
-                    if event.unicode.isnumeric():
-                        numberplayers += event.unicode
-    
-                if active:
-                    color = color_active
-                else:
-                    color = color_passive
-            
-            # bring it to life
-            pygame.draw.rect(window, color, input_rect)
+        # Paint the dice faces
+        if self.dice != None and self.freeze != None:
+            for i, (die, f) in enumerate(zip(self.dice, self.freeze)):
+                width = (1.7+(i*0.4))*const.QUARTER_WIDTH
+                height = const.MIDDLE_HEIGHT
+                if f != 0:
+                    pygame.draw.rect(window, (255,0,0), pygame.Rect(width-5, height-5, 103, 75))
+                window.blit(la.dice_assets[die], [width, height])
 
-            text_surface = base_font.render(numberplayers, True, (255,255,255))
 
-            # set position
-            window.blit(prompt_label, (WIDTH//2 - prompt_label.get_width()//2, 250))
-            window.blit(text_surface, (input_rect.x+5, input_rect.y+5))
-
-            # limit width so text cannot go outside of view
-
-            input_rect.w = max(100, text_surface.get_width()+10)
-            #update screen
+    def start(self):
+        '''Start a new game by rendering the title screen and awaiting player action'''
+        # Paint title screen
+        window.blit(la.title_asset, (0,0))
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                   return False
+                elif event.type == pygame.KEYDOWN:
+                    # Start game
+                    if event.key == pygame.K_r:
+                        self.__render()
+                        return True
             pygame.display.flip()
-
-            #update how long should pass
-            clock.tick(60)
+            clock.tick(const.FPS)
 
 
-def create_player(x):
-    # create individual players
-
-    # color for input background and letters
-    color_active = pygame.Color('lightskyblue3')
-    color_passive = pygame.Color('chartreuse4')
-    color = color_passive
-
-    window.blit(background, (0, 0))
-
-    prompt_label = base_font.render("Enter Player #{} Name: ".format(x),True, (255, 255, 255))
-    name = ""
-    user_text = ""
-    running = True
-    while running:
+    def end(self):
+        '''End of game event when turn limit is reached'''
+        winners = ""
+        max_score = 0
+        victory_msg = None 
+        for p in self.players:
+            if p.player_score > max_score:
+                max_score = p.player_score
+                winners = p.name
+            elif p.player_score == max_score:
+                winners += ", " + p.name 
+        if len(winners.split(",")) == 1:
+            victory_msg = la.base_font.render(f"{winners} wins with a score of {max_score}", True, (255,255,255))
+        else:
+            victory_msg = la.base_font.render(f"Tie game! {winners} tie with a score of {max_score}", True, (255,255,255))
+        window.blit(la.gameover_asset, (0,0))
+        window.blit(victory_msg,((const.WIDTH//2 - victory_msg.get_width()//2), const.HEIGHT//2))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if input_rect.collidepoint(event.pos):
-                    active = True
-                else:
-                    active = False
-            if event.type == pygame.KEYDOWN:
-                # If return, create player
-                if event.key == pygame.K_RETURN:
-                    name = user_text
-                    return player.Player(name)
-                # Check for backspace
-                if event.key == pygame.K_BACKSPACE:
-                    # get text input from 0 to -1 i.e. end
-                    user_text = user_text[:-1]
-                # Unicode standard is used for string
-                # formation
-                else:
-                    user_text += event.unicode
-
-                if active:
-                    color = color_active
-                else:
-                    color = color_passive
-            # bring it to life
-            pygame.draw.rect(window, color, input_rect)
-
-            text_surface = base_font.render(user_text, True, (255,255,255))
-
-            # set position
-            window.blit(prompt_label, (WIDTH//2 - prompt_label.get_width()//2, 250))
-            window.blit(text_surface, (input_rect.x+5, input_rect.y+5))
-
-            # limit width so text cannot go outside of view
-
-            input_rect.w = max(100, text_surface.get_width()+10)
-            #update screen
-            pygame.display.flip()
-
-            #update how long should pass
-            clock.tick(60)
-
-            
-def player_create():
-    # create player list
-    player_list = []
-    numplayer = int(player_numbers())
-    for x in range(1,numplayer+1):
-        player_list.append(create_player(x))
-    return player_list
+               sys.exit(1) 
 
 
-def start():
-    window.blit(title_slide,(0,0))
+    def roll_event(self):
+        '''Roll dice while there are rolls remaining. Re-render the screen'''
+        # Decrement rolls
+        if self.rolls > 0:
+            self.rolls-=1
+            self.dice = dc.roll(self.dice, self.freeze)
+        self.player_options = self.player.player_options(self.dice)
+        self.__render()
 
 
-def end(player_list):
-    winner = ""
-    winner_name = ""
-    max_score = 0
-    for i in range(0,len(player_list)):
-        if player_list[i].player_score >= max_score:
-            max_score = player_list[i].player_score
-            winner = player_list[i]
-            winner_name = winner.name
-            winnings = base_font.render(f"{winner_name} wins with a score of {max_score}", True, (255,255,255))
-        if player_list[i].player_score == max_score:
-            winnings = base_font.render('Tie game', True, (255,255,255))
-            #winnings = f'{winner} and {player_list[i].name} tied'
-    
-    #winnings = base_font.render(f"{winner} wins with a score of {max_score}", True, (255,255,255))
-    #quit_message = options_font.render("Press any key to exit", True, (255,255,255))
-
-    window.blit(game_over,(0,0))
-    window.blit(winnings,((WIDTH//2 - winnings.get_width()//2),HEIGHT//2))
-    score_label = score_font.render(f"{winner_name} score: {winner.player_score}", True, (255, 255, 255))
-    window.blit(score_label, (WIDTH//2-score_label.get_width()//2, HEIGHT//2+100))
-    #window.blit(quit_message,((WIDTH//2 - quit_message.get_width()//2),(HEIGHT//2)-winnings.get_height()//2-quit_message.get_height()))
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-           sys.exit(1) 
-
-
-
-def refresh(dice, freeze, player=None, player_options=None, rolls=None, options=None):
-    # Repaint the screen
-    window.blit(background, (0, 0))
-    window.blit(title_label, (WIDTH//2 - title_label.get_width()//2, 250))
-
-    # Repaint scorecard
-    window.blit(upper_selection_sc, (25, 5))
-    for i, sc  in enumerate(scorecard_labels_dict.values()):
-        window.blit(sc, card_pos[i])
-        window.blit(value_box_sc, value_box_pos[i])
-
-    # Print Player's Name on Top and score below scorecard
-    if player: 
-        player_displayname = base_font.render(f"{player.name}'s Turn with {rolls} rolls remaining", True,(255,255,255))
-        window.blit(player_displayname,(620,50))
-        score_label = score_font.render(f"Score: {player.player_score}", True, (255, 255, 255))
-        window.blit(score_label, (QUARTER_WIDTH-175, HEIGHT-35))
-
-        skeys = list(player.scorecard.keys())
-        if options:
-            for i in range(0,len(skeys)):
-                if player.scorecard.get(skeys[i])>-1:
-                    score_render = s_font.render(f"{player.scorecard.get(skeys[i])}",True,(255,0,0))
-                    window.blit(score_render,(value_box_pos[i]))
-                else:
-                    option_render = s_font.render(f"{options.get(skeys[i])}",True,(0,0,0))
-                    window.blit(option_render,(value_box_pos[i]))
-
-    # Paint the dice faces
-    if dice != None and freeze != None:
-        for i, (die, f) in enumerate(zip(dice, freeze)):
-            width = (1.7+(i*0.4))*QUARTER_WIDTH
-            height = MIDDLE_HEIGHT
-            if f != 0:
-                pygame.draw.rect(window, (255,0,0), pygame.Rect(width-5, height-5, 103, 75))
-            window.blit(dice_list[die], [width, height])
-            
-    # Paint player options
-    #if player_options != None:
-    #    window.blit(player_options, (QUARTER_WIDTH*2 - player_options.get_width()//2+100, HEIGHT//2+100))
+    def selection_event(self, x, y):
+        '''Boolean to check if selection has been made based on x/y of mouseclick'''
+        scorecard_assets = la.scorecard_assets
+        dice_assets = la.dice_assets
+        # Check if dice are clicked
+        for i, d in enumerate(dice_assets):
+            if d != None:
+                coords = ((1.7+((i-1)*0.4))*const.QUARTER_WIDTH+(const.WIDTH//28), const.MIDDLE_HEIGHT+const.HEIGHT//22)
+                if d.get_rect(center=coords).collidepoint(x,y):
+                    if self.freeze[i-1] != 0:
+                        self.freeze[i-1] = 0
+                    else:
+                        self.freeze[i-1] = i
+                    self.__render()
+                    print(self.freeze)
+        # Select an option
+        for i, sc in enumerate(scorecard_assets):
+            instance = scorecard_assets[sc]
+            if instance != None and self.player_options != None: 
+                if instance.get_rect(center=(25+instance.get_width()//2, 60+(i*50)+instance.get_height()//2)).collidepoint(x,y):
+                    if sc in self.player_options.keys() and self.player.scorecard[sc] == -1:
+                        print(f'"{sc}" selected')
+                        self.player.scorecard[sc] = self.player_options[sc] 
+                        self.player.player_score = self.player.player_score+self.player_options[sc] if self.player_options[sc] > 0 else 0
+                        return True 
 
 
-# Returns options
-def dice_roll(player, dice, freeze,rolls):
-    options = player.player_options(dice)
-    #print(options)
+    def advance_turn(self):
+        '''Move to the next player's turn if a selection is made. Reset values.'''
+        #print(f'{self.player.name} turn over')
+        # Switch to the next player
+        self.turns += 1
+        cycle_player = self.turns%len(self.players)
+        next_player = self.players[cycle_player]
+        # Call set values to reset to the defaults
+        self.__set_values(next_player, self.turns)
+        self.__render()
 
-    # Edit options label to current options
-    player_options = options_font.render(f"Options: {options}", True, (255, 255, 255))
-    refresh(dice, freeze, player, player_options, rolls, options)
-    return options
-
-
-def dice_freeze(x, y, dice, options, freeze, player):
-    # Check if dice are clicked
-    for i, d in enumerate(dice_list):
-        if d != None:
-            coords = ((1.7+((i-1)*0.4))*QUARTER_WIDTH+(WIDTH//28), MIDDLE_HEIGHT+HEIGHT//22)
-            if d.get_rect(center=coords).collidepoint(x,y):
-                if freeze[i-1] != 0:
-                    freeze[i-1] = 0
-                else:
-                    freeze[i-1] = i
-                refresh(dice, freeze, player)
-                print(freeze)
-    # Select an option
-    for i, sc in enumerate(scorecard_labels_dict):
-        instance = scorecard_labels_dict[sc]
-        if instance != None and options != None: 
-            if instance.get_rect(center=(card_pos[i][0]+instance.get_width()//2, card_pos[i][1]+instance.get_height()//2)).collidepoint(x,y):
-                if sc in options.keys() and player.scorecard[sc] == -1:
-                    print(f'"{sc}" selected')
-                    player.scorecard[sc] = options[sc] 
-                    player.player_score = player.player_score+options[sc] if options[sc] > 0 else 0
-                    # Return value true if selection is made
-                    return True
-        #return False
 
 def main():
     running = True
-    dice = dc.roll(None, None)
-    options = None
 
-    player_list = player_create()
-    turns = 0
-    # Initialize board
-    freeze = [0,0,0,0,0]
-    rolls = 3
+    #p1 = pl.Player("Player 1")
+    #p2 = pl.Player("Player 2")
+    #players = [p1, p2]
+    player = player_create()
+    
 
-    start()
+    # Create game state object that tracks player attributes
+    game_state = Yahtzee(players)
 
-    selection_made = False
-
-    count=0
-    curr_player = player_list[count]
+    # Start game
+    game_state.start()
 
     while running:
         # Check for game over
-        if turns > 4:
-            end(player_list)
+        if game_state.turns//len(game_state.players) >= 13:
+            game_state.end()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
             elif event.type == pygame.KEYDOWN:
-                # Start game
+                # Roll dice action
                 if event.key == pygame.K_r:
-                    if rolls == 3:
-                        print(f"'{curr_player.name}'s turn")
-                    if rolls > 0:
-                        rolls -= 1
-                        dice = dc.roll(dice, freeze)
-                        options = dice_roll(curr_player, dice, freeze, rolls)
+                    game_state.roll_event()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                # Select Dice
+                # Select Dice or a scoring option
                 x,y = event.pos
-                # Boolean to check if selection has been made
-                selection_made = dice_freeze(x, y, dice, options, freeze, curr_player)
-
-                # Move to next player's turn if a selection is made
+                selection_made = game_state.selection_event(x, y) 
                 if selection_made:
-                    # Reset values 
-                    rolls = 3
-                    freeze = [0,0,0,0,0]
-                    print(f'{curr_player.name} turn over')
-                    # Switch to the next player
-                    count +=1
-                    turns += 1    
-                    if count < len(player_list):
-                        curr_player = player_list[count]
-                    else:
-                        curr_player = player_list[0]
-                        count=0
-                    refresh(dice, freeze, player=curr_player, rolls=rolls)
+                    # If a selection is made, reset instance and advance to next player
+                    game_state.advance_turn()
+                    
         pygame.display.flip()
         # Constrain FPS
-        clock.tick(FPS)
+        clock.tick(const.FPS)
 
 
 if __name__=='__main__':
     main()
+

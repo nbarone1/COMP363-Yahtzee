@@ -1,12 +1,13 @@
-
 class Player:
     
     def __init__(self, name):
+        '''Player class includes a playr's name, score, and scorecard'''
         self.name = name
         self.player_score = 0
         self.scorecard = self.gen_scorecard()
 
     def gen_scorecard(self):
+        '''Generate a default scorecard for each plaer and available options. Default value is -1.''' 
         return  { 
             "aces" : -1, 
             "twos" : -1,
@@ -22,36 +23,20 @@ class Player:
             "yahtzee" : -1, 
             "chance" : -1
         }
-
-    def gen_optioncard(self):
-        return  { 
-            "aces" : 0, 
-            "twos" : 0,
-            "threes" : 0,
-            "fours" : 0,
-            "fives" : 0,
-            "sixes" : 0,
-            "3-kind" : 0,
-            "4-kind" : 0,
-            "full-house" : 0,
-            "sm-straight" : 0,
-            "lg-straight" : 0,
-            "yahtzee" : 0, 
-            "chance" : 0
-    }
       
-    # Valid option if it is not in current player's scorecard
-    def validate(self, options):
-        # Marks the current player's scorecard
-        for category in self.scorecard:
-            if not (self.scorecard[category] == -1 and options[category] > -1): 
-                options.pop(category)
-        return options
-
-
     def player_options(self, dice):
+        '''Find all possible scoring conditions; return a valid list of options the player can select
+        
+        Params:
+            options: Dict of valid player options
+        Returns:
+            Return valid dict of options
+        '''
         # List of possible scores the player could take
-        options = self.gen_optioncard()
+        options = self.gen_scorecard()
+        # Set option values to zero
+        for op in options:
+            options[op] = 0
         # Values - represents the count of each values; position is the dice value, 
         # value is the number of roles (Values must add up to 5, should be the case if dice len is 5)
         values = [0,0,0,0,0,0]
@@ -69,7 +54,6 @@ class Player:
         two = three = False
         straight = 0
         for v in values:
-
             # Two of a kind (nothing by itself)
             if v == 2:
                 two = True
@@ -103,7 +87,12 @@ class Player:
                 options['yahtzee'] = 50
             
             options['chance'] = total
-        
+
+        # Validate the current player's scorecard
+        for category in self.scorecard:
+            if not (self.scorecard[category] == -1 and options[category] > -1): 
+                options.pop(category)
         # Return valid dict of options
-        return self.validate(options) 
+        return options
+        
 
